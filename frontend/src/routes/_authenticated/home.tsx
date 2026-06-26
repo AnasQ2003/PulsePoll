@@ -43,7 +43,7 @@ const liveActivity = [
 ];
 
 const leaderboard = [
-  { name: "Avery W.", votes: 1280, badge: "🥇" },
+  { name: "Avery W.", votes: 1280, badges: "🥇" },
   { name: "Kenji T.", votes: 942, badge: "🥈" },
   { name: "Priya R.", votes: 711, badge: "🥉" },
   { name: "Marco D.", votes: 503, badge: "4" },
@@ -194,9 +194,8 @@ function HomePage() {
             <motion.button key={c.key} onClick={() => setCategory(c.key)}
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
               whileTap={{ scale: 0.94 }}
-              className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border transition ${
-                active ? "bg-foreground text-background border-foreground shadow-md" : "glass border-white/60 text-foreground"
-              }`}>
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border transition ${active ? "bg-foreground text-background border-foreground shadow-md" : "glass border-white/60 text-foreground"
+                }`}>
               <span>{c.emoji}</span> {c.label}
             </motion.button>
           );
