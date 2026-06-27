@@ -43,7 +43,7 @@ const liveActivity = [
 ];
 
 const leaderboard = [
-  { name: "Avery W.", votes: 1280, badgesed: "🥇" },
+  { name: "Avery W.", votes: 1280, badge: "🥇" },
   { name: "Kenji T.", votes: 942, badge: "🥈" },
   { name: "Priya R.", votes: 711, badge: "🥉" },
   { name: "Marco D.", votes: 503, badge: "4" },
