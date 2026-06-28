@@ -29,11 +29,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', app: 'PulsePoll API', timestamp: new Date() });
 });
 
-// ─── Routes (add as you build) ────────────────────────────────────────────────
-// app.use('/api/auth',     require('./routes/auth'));
-// app.use('/api/polls',    require('./routes/polls'));
-// app.use('/api/votes',    require('./routes/votes'));
-// app.use('/api/profiles', require('./routes/profiles'));
+// ─── Routes ──────────────────────────────────────────────────────────────────
+app.use('/api/auth',          require('./routes/auth'));
+app.use('/api/polls',         require('./routes/polls'));
+app.use('/api/votes',         require('./routes/votes'));
+app.use('/api/profiles',      require('./routes/profiles'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {

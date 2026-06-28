@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/mobile/AppShell";
+import { apiRequest } from "@/lib/api";
 import {
   Bell, Vote, Sparkles, MessageCircle, TrendingUp, Users,
   Trophy, Flame, CheckCircle2, Settings as SettingsIcon,
@@ -8,30 +10,46 @@ import {
 
 export const Route = createFileRoute("/_authenticated/notifications")({ component: Notifications });
 
-type Item = {
-  icon: any;
-  glow: string; // oklch color
-  title: string;
-  body: string;
-  time: string;
-  to: string;
-  unread?: boolean;
+const ICON_MAP: Record<string, { icon: any; glow: string }> = {
+  "🎉": { icon: Sparkles, glow: "oklch(0.70 0.20 320)" },
+  "📊": { icon: Vote, glow: "oklch(0.68 0.21 36)" },
+  "🔥": { icon: Flame, glow: "oklch(0.68 0.22 30)" },
+  "🏆": { icon: Trophy, glow: "oklch(0.75 0.18 80)" },
+  "💬": { icon: MessageCircle, glow: "oklch(0.65 0.18 250)" },
+  "📈": { icon: TrendingUp, glow: "oklch(0.70 0.20 150)" },
+  "👥": { icon: Users, glow: "oklch(0.65 0.20 200)" },
+  "✅": { icon: CheckCircle2, glow: "oklch(0.70 0.18 150)" },
+  "🔔": { icon: Bell, glow: "oklch(0.55 0.05 250)" },
 };
 
-const items: Item[] = [
-  { icon: Vote,          glow: "oklch(0.68 0.21 36)",  title: "Your poll closed",      body: "“Best pizza topping” reached 247 votes — tap to see the winner.", time: "2h",  to: "/results",     unread: true },
-  { icon: Sparkles,      glow: "oklch(0.70 0.20 320)", title: "Featured poll",         body: "Your poll is trending #3 in Tech this week.",                       time: "5h",  to: "/discover",    unread: true },
-  { icon: MessageCircle, glow: "oklch(0.65 0.18 250)", title: "New comment",           body: "Alex left a comment: “This one’s tough… going with B.”",            time: "1d",  to: "/discover" },
-  { icon: TrendingUp,    glow: "oklch(0.70 0.20 150)", title: "Trending in your feed", body: "5 new polls match your interests in Culture & Music.",              time: "1d",  to: "/discover" },
-  { icon: Users,         glow: "oklch(0.65 0.20 200)", title: "New follower",          body: "Priya R. started following your polls.",                            time: "2d",  to: "/profile" },
-  { icon: Trophy,        glow: "oklch(0.75 0.18 80)",  title: "Badge unlocked",        body: "You earned the “Daily Voter” streak badge — keep going!",           time: "2d",  to: "/profile" },
-  { icon: Flame,         glow: "oklch(0.68 0.22 30)",  title: "Streak at risk",        body: "Vote on 1 poll today to keep your 7-day streak alive.",             time: "3d",  to: "/home" },
-  { icon: CheckCircle2,  glow: "oklch(0.70 0.18 150)", title: "Account verified",      body: "Your email is verified. You can now create unlimited polls.",       time: "5d",  to: "/settings" },
-  { icon: Bell,          glow: "oklch(0.55 0.05 250)", title: "Welcome to Pollux",     body: "Cast your first vote and customise your interests to get started.", time: "1w", to: "/home" },
-];
-
 function Notifications() {
-  const unread = items.filter((i) => i.unread).length;
+  const qc = useQueryClient();
+
+  const { data: notifications = [] } = useQuery<any[]>({
+    queryKey: ["notifications"],
+    queryFn: () => apiRequest<any[]>("/notifications"),
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: () => apiRequest("/notifications/read", { method: "POST" }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
+  const getRelativeTime = (dateStr: string) => {
+    const elapsed = Date.now() - new Date(dateStr).getTime();
+    const minutes = Math.floor(elapsed / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 1) return "now";
+    if (minutes < 60) return `${minutes}m`;
+    if (hours < 24) return `${hours}h`;
+    return `${days}d`;
+  };
 
   return (
     <AppShell title="Notifications" back>
@@ -43,13 +61,18 @@ function Notifications() {
         <div>
           <div className="text-[10px] uppercase tracking-widest text-ember font-bold">Inbox</div>
           <div className="font-semibold text-sm mt-0.5">
-            {unread > 0 ? `${unread} new updates` : "You're all caught up"}
+            {unreadCount > 0 ? `${unreadCount} new updates` : "You're all caught up"}
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-card border border-border">
-            Mark all read
-          </button>
+          {unreadCount > 0 && (
+            <button
+              onClick={() => markReadMutation.mutate()}
+              className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-card border border-border"
+            >
+              Mark all read
+            </button>
+          )}
           <Link to="/settings" className="size-9 grid place-items-center rounded-full glass" aria-label="Notification settings">
             <SettingsIcon className="size-4" />
           </Link>
@@ -57,50 +80,64 @@ function Notifications() {
       </motion.div>
 
       <div className="space-y-2.5">
-        {items.map((it, i) => (
-          <motion.div key={i}
-            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-          >
-            <Link
-              to={it.to}
-              className="relative block p-4 rounded-2xl glass overflow-hidden active:scale-[0.99] transition"
-            >
-              {/* Colored inner glow */}
-              <div
-                className="pointer-events-none absolute -left-6 -top-6 size-32 rounded-full"
-                style={{ background: `radial-gradient(circle, ${it.glow} 0%, transparent 70%)`, opacity: 0.35, filter: "blur(8px)" }}
-              />
-              <div
-                className="pointer-events-none absolute -right-10 -bottom-10 size-28 rounded-full"
-                style={{ background: `radial-gradient(circle, ${it.glow} 0%, transparent 70%)`, opacity: 0.22, filter: "blur(10px)" }}
-              />
+        {notifications.map((it, i) => {
+          const mapping = ICON_MAP[it.icon] || ICON_MAP["🔔"];
+          const Icon = mapping.icon;
+          const glow = mapping.glow;
 
-              <div className="relative flex gap-3">
+          return (
+            <motion.div key={it.id}
+              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+            >
+              <Link
+                to={it.route || "/home"}
+                className="relative block p-4 rounded-2xl glass overflow-hidden active:scale-[0.99] transition"
+              >
+                {/* Colored inner glow */}
                 <div
-                  className="size-11 rounded-2xl grid place-items-center shrink-0 text-background"
-                  style={{
-                    background: `linear-gradient(135deg, ${it.glow}, color-mix(in oklch, ${it.glow} 60%, white))`,
-                    boxShadow: `0 8px 24px -8px ${it.glow}`,
-                  }}
-                >
-                  <it.icon className="size-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="font-semibold text-sm flex items-center gap-1.5">
-                      {it.title}
-                      {it.unread && (
-                        <span className="size-1.5 rounded-full" style={{ background: it.glow, boxShadow: `0 0 8px ${it.glow}` }} />
-                      )}
-                    </div>
-                    <span className="text-[10px] text-muted-foreground shrink-0">{it.time}</span>
+                  className="pointer-events-none absolute -left-6 -top-6 size-32 rounded-full"
+                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: 0.35, filter: "blur(8px)" }}
+                />
+                <div
+                  className="pointer-events-none absolute -right-10 -bottom-10 size-28 rounded-full"
+                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: 0.22, filter: "blur(10px)" }}
+                />
+
+                <div className="relative flex gap-3">
+                  <div
+                    className="size-11 rounded-2xl grid place-items-center shrink-0 text-background"
+                    style={{
+                      background: `linear-gradient(135deg, ${glow}, color-mix(in oklch, ${glow} 60%, white))`,
+                      boxShadow: `0 8px 24px -8px ${glow}`,
+                    }}
+                  >
+                    <Icon className="size-5" />
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{it.body}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="font-semibold text-sm flex items-center gap-1.5">
+                        {it.title}
+                        {it.unread && (
+                          <span className="size-1.5 rounded-full" style={{ background: glow, boxShadow: `0 0 8px ${glow}` }} />
+                        )}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(it.created_at)}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{it.body}</div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          );
+        })}
+
+        {notifications.length === 0 && (
+          <div className="text-center py-12 rounded-3xl glass">
+            <Bell className="size-8 mx-auto text-muted-foreground" />
+            <div className="mt-2 text-sm font-semibold">Inbox is empty</div>
+            <div className="text-xs text-muted-foreground">We'll notify you when someone votes or follows.</div>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 text-center text-[11px] text-muted-foreground pb-2">

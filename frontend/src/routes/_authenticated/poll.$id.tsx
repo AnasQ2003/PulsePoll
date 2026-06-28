@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useMemo } from "react";
@@ -30,10 +30,7 @@ function PollDetail() {
   const { data } = useQuery({
     queryKey: ["poll", id],
     queryFn: async () => {
-      const { data: poll } = await supabase.from("polls").select("*").eq("id", id).single();
-      const { data: options } = await supabase.from("poll_options").select("*").eq("poll_id", id).order("position");
-      const { data: votes } = await supabase.from("votes").select("option_id, user_id, created_at").eq("poll_id", id);
-      return { poll, options: options ?? [], votes: votes ?? [] };
+      return await apiRequest<any>(`/polls/${id}`);
     },
   });
 
@@ -53,11 +50,17 @@ function PollDetail() {
 
   async function vote() {
     if (!selected || !user) return;
-    const { error } = await supabase.from("votes").insert({ poll_id: id, option_id: selected, user_id: user.id });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Vote recorded âœ“");
-    qc.invalidateQueries({ queryKey: ["poll", id] });
-    qc.invalidateQueries({ queryKey: ["polls"] });
+    try {
+      await apiRequest(`/votes`, {
+        method: "POST",
+        body: JSON.stringify({ poll_id: id, option_id: selected }),
+      });
+      toast.success("Vote recorded ✓");
+      qc.invalidateQueries({ queryKey: ["poll", id] });
+      qc.invalidateQueries({ queryKey: ["polls"] });
+    } catch (err: any) {
+      toast.error(err.message ?? "Failed to register vote");
+    }
   }
 
   const showResults = !!myVote;
@@ -189,13 +192,13 @@ function PollDetail() {
                     <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip contentStyle={{ fontSize: 12, borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.1)" }} />
                     <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                      {stats.rows.map((r, i) => <Cell key={i} fill={r.color} />)}
+                      {stats.rows.map((r: any, i: number) => <Cell key={i} fill={r.color} />)}
                     </Bar>
                   </BarChart>
                 ) : (
                   <PieChart>
                     <Pie data={stats.rows} dataKey="value" innerRadius={40} outerRadius={70} paddingAngle={3}>
-                      {stats.rows.map((r, i) => <Cell key={i} fill={r.color} />)}
+                      {stats.rows.map((r: any, i: number) => <Cell key={i} fill={r.color} />)}
                     </Pie>
                     <Tooltip contentStyle={{ fontSize: 12, borderRadius: 12, border: "none" }} />
                   </PieChart>
@@ -204,7 +207,7 @@ function PollDetail() {
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-1.5">
-              {stats.rows.map((r) => (
+              {stats.rows.map((r: any) => (
                 <div key={r.id} className="flex items-center gap-1.5 text-[11px]">
                   <span className="size-2.5 rounded-full" style={{ background: r.color }} />
                   <span className="truncate flex-1">{r.name}</span>

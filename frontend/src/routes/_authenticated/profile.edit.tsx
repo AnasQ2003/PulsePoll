@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -29,12 +29,25 @@ function EditProfile() {
   async function save() {
     if (!user) return;
     setSaving(true);
-    await apiRequest("/profiles/me", { method: "PATCH", body: JSON.stringify(updates) });
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Profile updated");
-    await refreshProfile();
-    nav({ to: "/profile" });
+    try {
+      const updates = {
+        display_name: display,
+        username,
+        bio,
+        phone,
+      };
+      await apiRequest("/profiles/me", {
+        method: "PATCH",
+        body: JSON.stringify(updates),
+      });
+      toast.success("Profile updated");
+      await refreshProfile();
+      nav({ to: "/profile" });
+    } catch (err: any) {
+      toast.error(err.message ?? "Failed to update profile");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const initials = (display || user?.email || "U").slice(0, 2).toUpperCase();
@@ -64,7 +77,7 @@ function EditProfile() {
       <motion.button whileTap={{ scale: 0.97 }} disabled={saving} onClick={save}
         className="mt-6 w-full py-3.5 rounded-2xl font-semibold text-background glow-orange"
         style={{ background: "linear-gradient(135deg, var(--color-ember), oklch(0.55 0.22 36))" }}>
-        {saving ? "Savingâ€¦" : "Save changes"}
+        {saving ? "Saving…" : "Save changes"}
       </motion.button>
     </AppShell>
   );
@@ -82,6 +95,3 @@ function Field({ label, value, onChange, prefix, placeholder }: any) {
     </div>
   );
 }
-
-
-

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
@@ -26,12 +26,7 @@ function Results() {
     queryKey: ["results", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data } = await supabase
-        .from("polls")
-        .select("*, poll_options(id, label), votes(id, option_id)")
-        .eq("created_by", user!.id)
-        .order("created_at", { ascending: false });
-      return data ?? [];
+      return await apiRequest<any[]>("/polls/mine");
     },
     enabled: !!user,
   });

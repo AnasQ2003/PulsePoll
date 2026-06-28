@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -29,24 +29,13 @@ function Profile() {
 
   const { data: stats } = useQuery({
     queryKey: ["my-stats", user?.id],
-    queryFn: async () => {
-      const [{ count: voted }, { count: created }] = await Promise.all([
-        supabase.from("votes").select("*", { count: "exact", head: true }).eq("user_id", user!.id),
-        supabase.from("polls").select("*", { count: "exact", head: true }).eq("created_by", user!.id),
-      ]);
-      return { voted: voted ?? 0, created: created ?? 0 };
-    },
+    queryFn: () => apiRequest<{ voted: number; created: number }>("/profiles/stats"),
     enabled: !!user,
   });
 
   const { data: myPolls = [] } = useQuery({
     queryKey: ["my-polls", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("polls").select("id, title, cover_emoji, created_at, votes(id)")
-        .eq("created_by", user!.id).order("created_at", { ascending: false }).limit(10);
-      return data ?? [];
-    },
+    queryFn: () => apiRequest<any[]>("/polls/mine"),
     enabled: !!user,
   });
 
@@ -56,7 +45,7 @@ function Profile() {
   const xpInLevel = xp % 200;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(`@${profile?.username ?? "me"} on Pollux`);
+    await navigator.clipboard.writeText(`@${profile?.username ?? "me"} on PulsePoll`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -96,7 +85,7 @@ function Profile() {
         {/* XP bar */}
         <div className="relative z-10 mt-4">
           <div className="flex justify-between text-[10px] text-white/70 mb-1">
-            <span>{xp} XP Â· Level {level}</span><span>{xpInLevel}/200 to next</span>
+            <span>{xp} XP · Level {level}</span><span>{xpInLevel}/200 to next</span>
           </div>
           <div className="h-1.5 rounded-full bg-white/15 overflow-hidden">
             <motion.div initial={{ width: 0 }} animate={{ width: `${(xpInLevel / 200) * 100}%` }} transition={{ duration: 0.8 }}
@@ -154,7 +143,7 @@ function Profile() {
       <div className="mt-4">
         {tab === "overview" && (
           <div className="space-y-2">
-            <Row icon={<Mail className="size-4" />} label="Email" value={user?.email ?? "â€”"} />
+            <Row icon={<Mail className="size-4" />} label="Email" value={user?.email ?? "—"} />
             <Row icon={<Phone className="size-4" />} label="Phone" value={profile?.phone ?? "Not added"} />
             <Link to="/notifications" className="block">
               <Row icon={<Bell className="size-4" />} label="Notifications" value="Manage alerts" />
@@ -171,10 +160,10 @@ function Profile() {
             {myPolls.map((p: any, i: number) => (
               <motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
                 <Link to="/poll/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 rounded-2xl glass">
-                  <div className="size-10 rounded-xl bg-ember-soft grid place-items-center text-lg">{p.cover_emoji ?? "ðŸ—³ï¸"}</div>
+                  <div className="size-10 rounded-xl bg-ember-soft grid place-items-center text-lg">{p.cover_emoji ?? "🗳️"}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-sm truncate">{p.title}</div>
-                    <div className="text-[11px] text-muted-foreground">{p.votes?.length ?? 0} votes Â· {new Date(p.created_at).toLocaleDateString()}</div>
+                    <div className="text-[11px] text-muted-foreground">{p.vote_count ?? 0} votes · {new Date(p.created_at).toLocaleDateString()}</div>
                   </div>
                 </Link>
               </motion.div>
@@ -225,6 +214,3 @@ function Row({ icon, label, value }: any) {
     </div>
   );
 }
-
-
-
