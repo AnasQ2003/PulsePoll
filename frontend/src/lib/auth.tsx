@@ -9,12 +9,12 @@ export type Profile = {
   avatar_url: string | null;
   phone: string | null;
 };
-
 export type User = {
   id: string;
   email: string;
   username: string;
   display_name: string;
+  created_at?: string;
 };
 
 type Ctx = {
