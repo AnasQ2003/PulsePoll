@@ -119,7 +119,7 @@ function HomePage() {
             <span className="size-1.5 rounded-full bg-ember animate-pulse" /> Live
           </div>
           <h2 className="mt-2 text-2xl font-bold leading-tight">
-            {polls.length} active polls<br />waiting for your pleaso vote
+            {polls.length} active polls<br />waiting for your vote
           </h2>
           <div className="mt-3 flex items-center gap-2">
             <Link to="/discover" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ember text-background text-xs font-semibold">
