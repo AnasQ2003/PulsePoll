@@ -154,10 +154,14 @@ function AuthPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       type={showPwd ? "text" : "password"}
                       placeholder="Password"
-                      className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground min-w-0"
+                      autoComplete={mode === "login" ? "current-password" : "new-password"}
+                      data-lpignore="true"
+                      data-1p-ignore
+                      data-form-type="password"
+                      className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground min-w-0 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
                     />
                     <button type="button" onClick={() => setShowPwd((v) => !v)}
-                      className="text-muted-foreground hover:text-foreground transition shrink-0"
+                      className="text-muted-foreground hover:text-foreground transition shrink-0 p-0.5 rounded"
                       aria-label={showPwd ? "Hide password" : "Show password"}>
                       {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>

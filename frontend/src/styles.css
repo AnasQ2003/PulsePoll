@@ -225,13 +225,19 @@
   transform: translateY(-1.5px);
 }
 
-/* Disable native browser password reveal eye / clear buttons */
+/* Disable ALL native browser password reveal/clear/autofill overlay buttons */
 input::-ms-reveal,
 input::-ms-clear,
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
 input::-webkit-contacts-auto-fill-button,
-input::-webkit-credentials-auto-fill-button {
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-password-auto-fill-button {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 

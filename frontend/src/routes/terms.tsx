@@ -1,65 +1,76 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/mobile/PhoneShell";
 import { TopBar } from "@/components/mobile/TopBar";
+import { FileText, ShieldAlert, Scale, UserCheck, Flame, Info } from "lucide-react";
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms of Service — PulsePoll" }, { name: "description", content: "PulsePoll terms of service." }] }),
+  head: () => ({ meta: [{ title: "Terms of Service — PulsePoll" }, { name: "description", content: "PulsePoll terms of service and user agreements." }] }),
   component: () => (
     <PhoneShell>
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col bg-background">
         <TopBar title="Terms of Service" back right={<div />} />
-        <main className="flex-1 overflow-y-auto px-6 py-5 space-y-5 text-sm leading-relaxed text-muted-foreground">
-          <p className="text-xs uppercase tracking-wider text-[var(--color-ember)]">Last updated · June 2026</p>
+        <main className="flex-1 overflow-y-auto px-5 py-6 space-y-6 text-xs leading-relaxed text-muted-foreground hide-scroll">
+          
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-2xl glass inner-glow flex items-start gap-3">
+            <div className="size-8 rounded-xl bg-ember-soft text-ember flex items-center justify-center shrink-0">
+              <FileText className="size-4" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-[var(--color-ember)] font-bold">Document Status: Active</p>
+              <h2 className="text-foreground font-bold text-sm mt-0.5">Terms of Service & Usage</h2>
+              <p className="mt-1 text-muted-foreground">Please read these terms carefully. They govern your use of the PulsePoll platform, including creating polls, casting votes, and managing user content.</p>
+            </div>
+          </motion.div>
+
+          <div className="h-px bg-white/40" />
 
           <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">1. Using PulsePoll</h2>
-            <p>PulsePoll is a polling platform that helps groups make decisions together. By creating an account or accessing the service in any way, you agree to be bound by these Terms. If you do not agree, please do not use PulsePoll.</p>
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <UserCheck className="size-4 text-ember shrink-0" /> 1. Acceptance of Agreement
+            </h2>
+            <p>Welcome to PulsePoll. By creating an account, logging in, using the mobile application interface, accessing any of our API endpoints, or interacting with the service in any capacity, you acknowledge that you have read, understood, and agreed to be legally bound by these Terms of Service, our Privacy Policy, and any supplemental rules or guidelines published within the app. If you do not accept these terms in their entirety, you must immediately cease all use of PulsePoll.</p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">2. Eligibility & Accounts</h2>
-            <p>You must be at least 13 years old (or the minimum digital-consent age in your country) to use PulsePoll. You are responsible for keeping your credentials confidential and for every action taken under your account. Notify us immediately of any unauthorized use.</p>
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Scale className="size-4 text-ember shrink-0" /> 2. Eligibility & Account Security
+            </h2>
+            <p>You must be at least 13 years of age (or the minimum legal age of digital consent in your jurisdiction, whichever is greater) to establish a PulsePoll account. If you register on behalf of an organization or legal entity, you warrant that you possess full authorized authority to bind them to this agreement.</p>
+            <p className="mt-1">You are solely responsible for maintaining the absolute confidentiality of your login credentials (username, password, and authentication tokens) and for any actions taken under your account. You agree to notify our support team immediately of any unauthorized access, breach of security, or credential leakage. PulsePoll will not be held liable for any loss, liability, or damage resulting from your failure to protect your login information.</p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">3. Polls You Create</h2>
-            <p>When you create a poll you control its question, options, audience and lifecycle. You may restrict voting to specific users or open it to everyone. You are solely responsible for the content of polls you publish and for honouring any commitments implied by their outcome.</p>
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Flame className="size-4 text-ember shrink-0" /> 3. Community Guidelines & Integrity
+            </h2>
+            <p>To ensure fair and transparent outcomes, we enforce a strict policy on voting integrity:</p>
+            <ul className="list-disc pl-4 space-y-1 mt-1 text-muted-foreground">
+              <li><strong className="text-foreground">One Vote Per Person:</strong> Each natural person is allowed exactly one vote per poll. You may not vote multiple times on a single poll using alternate accounts or device-spoofing techniques.</li>
+              <li><strong className="text-foreground">Anti-Automation:</strong> The use of bots, scripts, automated web-scrapers, macro tools, or coordinate networks to inflate, manipulate, or bias poll results is strictly prohibited.</li>
+              <li><strong className="text-foreground">Coercion Free:</strong> Offering direct monetary incentives, bribes, or using threats/intimidation to force other users to vote in a specific direction will result in account ban.</li>
+            </ul>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">4. Voting Integrity</h2>
-            <p>Every voter gets one vote per poll. Attempting to manipulate results — creating fake accounts, automating votes, coercing other users, or exploiting bugs to vote more than once — is strictly prohibited and will result in immediate suspension.</p>
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <ShieldAlert className="size-4 text-ember shrink-0" /> 4. Content Ownership & Moderation
+            </h2>
+            <p>You retain full intellectual property ownership of the poll descriptions, options, display names, and avatars you submit to PulsePoll. However, by publishing content on the platform, you grant PulsePoll a non-exclusive, royalty-free, worldwide, perpetual license to host, cache, distribute, reproduce, and display your polls for the operational purposes of the platform.</p>
+            <p className="mt-1">We reserve the right, but assume no obligation, to pre-screen, monitor, flag, filter, or delete any user content that we determine, in our sole discretion, violates these terms, is abusive, promotes hate speech, infringes third-party copyright/trademarks, or is otherwise harmful to the community.</p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">5. Prohibited Content</h2>
-            <p>You may not post polls, options or profile content that is illegal, defamatory, hateful, sexually explicit toward minors, or that infringes intellectual-property rights. You may not use PulsePoll to harass, dox, or threaten others, or to organise real-world harm.</p>
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Info className="size-4 text-ember shrink-0" /> 5. Service Disclaimers & Limits
+            </h2>
+            <p>PulsePoll is provided to you on an "AS IS" and "AS AVAILABLE" basis, without warranty of any kind, express or implied. Poll outcomes are purely advisory and hold no legal, binding, or financial authority. We do not guarantee that the app will be uninterrupted, bug-free, or entirely secure from malicious intrusion.</p>
           </section>
 
-          <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">6. Intellectual Property</h2>
-            <p>You retain ownership of the polls and content you submit. By posting, you grant PulsePoll a worldwide, royalty-free licence to host, display, and distribute that content inside the app strictly as needed to operate the service.</p>
-          </section>
-
-          <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">7. Termination</h2>
-            <p>We may suspend, delete or restrict accounts that violate these Terms, abuse other users, or compromise the platform's integrity. You may delete your own account at any time from Settings; doing so removes your profile and revokes future access to your polls.</p>
-          </section>
-
-          <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">8. Disclaimers & Liability</h2>
-            <p>PulsePoll is provided "as is" without warranties of any kind, express or implied. Poll outcomes are advisory and not legally binding. To the maximum extent permitted by law, PulsePoll and its operators are not liable for any indirect, incidental or consequential damages arising from use of the service.</p>
-          </section>
-
-          <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">9. Changes to These Terms</h2>
-            <p>We may update these Terms as PulsePoll evolves. Material changes will be announced inside the app at least 14 days before they take effect. Continued use after that date constitutes acceptance of the updated Terms.</p>
-          </section>
-
-          <section className="space-y-2">
-            <h2 className="text-foreground font-semibold text-base">10. Contact</h2>
-            <p>Questions about these Terms? Reach the PulsePoll team from Settings → Support, and we'll respond within five business days.</p>
-          </section>
+          <div className="p-4 rounded-2xl glass-strong text-center text-[10px] text-muted-foreground">
+            © 2026 PulsePoll Inc. All rights reserved. Registered address: 128 Innovation Way, Suite 400. Contact: legal@pulsepoll.app.
+          </div>
         </main>
       </div>
     </PhoneShell>

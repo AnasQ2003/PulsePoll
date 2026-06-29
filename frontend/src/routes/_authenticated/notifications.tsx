@@ -56,7 +56,7 @@ function Notifications() {
       {/* Header strip */}
       <motion.div
         initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between p-4 rounded-3xl glass-strong mb-4"
+        className="flex items-center justify-between p-4 rounded-3xl glass-strong inner-glow mb-4"
       >
         <div>
           <div className="text-[10px] uppercase tracking-widest text-ember font-bold">Inbox</div>
@@ -73,7 +73,7 @@ function Notifications() {
               Mark all read
             </button>
           )}
-          <Link to="/settings" className="size-9 grid place-items-center rounded-full glass" aria-label="Notification settings">
+          <Link to="/settings" className="size-9 grid place-items-center rounded-full glass inner-glow" aria-label="Notification settings">
             <SettingsIcon className="size-4" />
           </Link>
         </div>
@@ -91,7 +91,7 @@ function Notifications() {
             >
               <Link
                 to={it.route || "/home"}
-                className="relative block p-4 rounded-2xl glass overflow-hidden active:scale-[0.99] transition"
+                className="relative block p-4 rounded-2xl glass inner-glow overflow-hidden active:scale-[0.99] transition"
               >
                 {/* Colored inner glow */}
                 <div
@@ -132,7 +132,7 @@ function Notifications() {
         })}
 
         {notifications.length === 0 && (
-          <div className="text-center py-12 rounded-3xl glass">
+          <div className="text-center py-12 rounded-3xl glass inner-glow">
             <Bell className="size-8 mx-auto text-muted-foreground" />
             <div className="mt-2 text-sm font-semibold">Inbox is empty</div>
             <div className="text-xs text-muted-foreground">We'll notify you when someone votes or follows.</div>

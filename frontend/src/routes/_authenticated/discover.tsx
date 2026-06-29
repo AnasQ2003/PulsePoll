@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState, useEffect } from "react";
 import { AppShell } from "@/components/mobile/AppShell";
 import { apiRequest } from "@/lib/api";
+import { toast } from "sonner";
 import {
   Search, Sparkles, TrendingUp, Flame, Clock, Filter,
   LayoutGrid, List as ListIcon, X, Hash, Star, Globe,
@@ -78,7 +79,7 @@ function Discover() {
   return (
     <AppShell title="Discover">
       {/* Search */}
-      <label className="flex items-center gap-2 px-4 py-3 rounded-2xl glass">
+      <label className="flex items-center gap-2 px-4 py-3 rounded-2xl glass inner-glow">
         <Search className="size-4 text-muted-foreground" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search polls, topics, creators…"
           className="flex-1 bg-transparent outline-none text-sm min-w-0" />
@@ -89,13 +90,14 @@ function Discover() {
       <div className="mt-4 -mx-1 px-1 flex gap-3 overflow-x-auto hide-scroll">
         {spotlights.map((s, i) => (
           <motion.div key={s.title} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
-            className="shrink-0 w-64 p-4 rounded-3xl text-background relative overflow-hidden"
+            className="shrink-0 w-64 p-4 rounded-3xl text-background relative overflow-hidden inner-glow"
             style={{ background: s.grad }}>
             <div className="absolute -right-4 -top-2 text-6xl opacity-30">{s.emoji}</div>
             <div className="text-[10px] uppercase tracking-widest text-white/80">Featured</div>
             <div className="mt-1 font-bold">{s.title}</div>
             <div className="text-xs text-white/85">{s.subtitle}</div>
-            <button className="mt-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-semibold">
+            <button onClick={() => toast.success(`Viewing: ${s.title} ✨`)}
+              className="mt-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-semibold active:bg-white/40 transition">
               <Sparkles className="size-3" /> Open
             </button>
           </motion.div>
@@ -111,7 +113,7 @@ function Discover() {
               whileTap={{ scale: 0.94 }}
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
               className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border transition ${
-                active ? "bg-foreground text-background border-foreground" : "glass border-white/60"
+                active ? "bg-foreground text-background border-foreground shadow-md" : "glass inner-glow border-white/60"
               }`}>
               <span>{t.emoji}</span> {t.label}
             </motion.button>
@@ -120,7 +122,7 @@ function Discover() {
       </div>
 
       {/* Trending tags */}
-      <div className="mt-4 p-4 rounded-3xl glass">
+      <div className="mt-4 p-4 rounded-3xl glass inner-glow">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Hash className="size-4 text-ember" /> Trending tags
         </div>
@@ -139,7 +141,7 @@ function Discover() {
         <div className="flex items-center gap-1.5 text-sm font-semibold">
           <Globe className="size-4 text-ember" /> {filtered.length} results
         </div>
-        <div className="inline-flex p-0.5 rounded-full glass">
+        <div className="inline-flex p-0.5 rounded-full glass inner-glow">
           <button onClick={() => setView("grid")}
             className={`size-7 grid place-items-center rounded-full transition ${view === "grid" ? "bg-foreground text-background" : ""}`}>
             <LayoutGrid className="size-3.5" />
@@ -159,7 +161,7 @@ function Discover() {
             {filtered.map((p: any, i: number) => (
               <motion.div key={p.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: Math.min(i * 0.03, 0.2) }}>
                 <Link to="/poll/$id" params={{ id: p.id }}
-                  className="block p-4 rounded-3xl glass h-full">
+                  className="block p-4 rounded-3xl glass inner-glow h-full active:scale-[0.98] transition">
                   <div className="flex items-start justify-between">
                     <div className="text-2xl">{p.cover_emoji ?? "🗳️"}</div>
                     {(p.votes?.length ?? 0) > 1 && <Flame className="size-3.5 text-ember" />}
@@ -182,14 +184,20 @@ function Discover() {
             className="mt-3 space-y-2">
             {filtered.map((p: any, i: number) => (
               <motion.div key={p.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(i * 0.03, 0.2) }}>
-                <Link to="/poll/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 rounded-2xl glass">
-                  <div className="size-11 rounded-2xl bg-ember-soft grid place-items-center text-xl shrink-0">{p.cover_emoji ?? "🗳️"}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm truncate">{p.title}</div>
-                    <div className="text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes · {p.category ?? "General"}</div>
-                  </div>
-                  <Star className="size-4 text-muted-foreground" />
-                </Link>
+                <div className="flex items-center gap-3 p-3 rounded-2xl glass inner-glow">
+                  <Link to="/poll/$id" params={{ id: p.id }} className="flex-1 flex items-center gap-3 min-w-0">
+                    <div className="size-11 rounded-2xl bg-ember-soft grid place-items-center text-xl shrink-0">{p.cover_emoji ?? "🗳️"}</div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-sm truncate">{p.title}</div>
+                      <div className="text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes · {p.category ?? "General"}</div>
+                    </div>
+                  </Link>
+                  <motion.button whileTap={{ scale: 0.8 }}
+                    onClick={(e) => { e.stopPropagation(); toast.success("Subscribed! 🔔"); }}
+                    className="size-8 grid place-items-center rounded-full hover:bg-white/60 transition shrink-0">
+                    <Star className="size-4 text-muted-foreground" />
+                  </motion.button>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -197,7 +205,7 @@ function Discover() {
       </AnimatePresence>
 
       {filtered.length === 0 && (
-        <div className="mt-6 text-center text-sm text-muted-foreground py-12 rounded-3xl glass">
+        <div className="mt-6 text-center text-sm text-muted-foreground py-12 rounded-3xl glass inner-glow">
           <Filter className="size-6 mx-auto text-muted-foreground" />
           <div className="mt-2">No polls match your search.</div>
           <button onClick={() => { setQ(""); setTopic("all"); }} className="mt-3 text-xs text-ember font-semibold">Reset filters</button>

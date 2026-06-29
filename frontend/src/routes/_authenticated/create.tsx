@@ -54,7 +54,7 @@ function Create() {
     <AppShell title="Create Poll">
       <div className="space-y-4 pb-4">
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-3xl p-4 glass overflow-hidden">
+          className="relative rounded-3xl p-4 glass inner-glow overflow-hidden">
           <div className="absolute -top-10 -right-10 size-32 rounded-full blur-3xl opacity-70"
             style={{ background: "radial-gradient(circle, oklch(0.78 0.2 36) 0%, transparent 70%)" }} />
           <div className="relative flex items-start gap-3">
@@ -69,7 +69,7 @@ function Create() {
           </div>
         </motion.div>
 
-        <div className="rounded-3xl glass p-4">
+        <div className="rounded-3xl glass inner-glow p-4">
           <div className="flex items-center gap-2 mb-2">
             <Wand2 className="size-3.5 text-[var(--color-ember)]" />
             <div className="text-xs font-semibold">Start from a template</div>
@@ -86,7 +86,7 @@ function Create() {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl glass">
+        <div className="p-4 rounded-3xl glass inner-glow">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="size-3.5 text-[var(--color-ember)]" />
             <label className="text-xs font-semibold">Cover emoji</label>
@@ -101,7 +101,7 @@ function Create() {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl glass space-y-3">
+        <div className="p-4 rounded-3xl glass inner-glow space-y-3">
           <div className="flex items-center gap-2">
             <Type className="size-3.5 text-[var(--color-ember)]" />
             <label className="text-xs font-semibold">Question</label>
@@ -122,7 +122,7 @@ function Create() {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl glass">
+        <div className="p-4 rounded-3xl glass inner-glow">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ListChecks className="size-3.5 text-[var(--color-ember)]" />
@@ -151,7 +151,7 @@ function Create() {
           </div>
         </div>
 
-        <div className="p-4 rounded-3xl glass">
+        <div className="p-4 rounded-3xl glass inner-glow">
           <label className="text-xs font-medium text-muted-foreground">Who can vote?</label>
           <div className="mt-2 grid grid-cols-2 gap-2">
             {([
@@ -168,7 +168,7 @@ function Create() {
           </div>
         </div>
 
-        <div className="rounded-3xl glass p-4">
+        <div className="rounded-3xl glass inner-glow p-4">
           <div className="flex items-center gap-2 mb-3">
             <Eye className="size-3.5 text-[var(--color-ember)]" />
             <div className="text-xs font-semibold">Live preview</div>

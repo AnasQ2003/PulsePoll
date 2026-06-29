@@ -52,7 +52,7 @@ function Profile() {
 
   return (
     <AppShell title="Profile" right={
-      <Link to="/profile/edit" className="size-9 grid place-items-center rounded-full glass">
+      <Link to="/profile/edit" className="size-9 grid place-items-center rounded-full glass inner-glow">
         <Pencil className="size-4" />
       </Link>
     }>
@@ -120,7 +120,7 @@ function Profile() {
         <div className="mt-2 flex gap-2 overflow-x-auto hide-scroll -mx-1 px-1">
           {achievements.map((a, i) => (
             <motion.div key={a.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.04 }}
-              className="shrink-0 w-20 p-3 rounded-2xl glass flex flex-col items-center gap-1 text-center">
+              className="shrink-0 w-20 p-3 rounded-2xl glass inner-glow flex flex-col items-center gap-1 text-center">
               <div className="size-9 rounded-full grid place-items-center text-background" style={{ background: a.tint }}>
                 <a.icon className="size-4" />
               </div>
@@ -131,7 +131,7 @@ function Profile() {
       </div>
 
       {/* Tabs */}
-      <div className="mt-5 inline-flex p-1 rounded-full glass w-full">
+      <div className="mt-5 inline-flex p-1 rounded-full glass inner-glow w-full">
         {(["overview", "polls", "votes"] as const).map((t) => (
           <button key={t} onClick={() => setTab(t)}
             className={`flex-1 text-xs font-semibold py-2 rounded-full capitalize transition ${tab === t ? "bg-foreground text-background" : "text-muted-foreground"}`}>
@@ -159,7 +159,7 @@ function Profile() {
             {myPolls.length === 0 && <div className="text-center text-sm text-muted-foreground py-8 rounded-3xl glass">No polls yet.</div>}
             {myPolls.map((p: any, i: number) => (
               <motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                <Link to="/poll/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 rounded-2xl glass">
+                <Link to="/poll/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 rounded-2xl glass inner-glow">
                   <div className="size-10 rounded-xl bg-ember-soft grid place-items-center text-lg">{p.cover_emoji ?? "🗳️"}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-sm truncate">{p.title}</div>
@@ -171,7 +171,7 @@ function Profile() {
           </div>
         )}
         {tab === "votes" && (
-          <div className="rounded-3xl glass p-6 text-center">
+          <div className="rounded-3xl glass inner-glow p-6 text-center">
             <Activity className="size-6 mx-auto text-ember" />
             <div className="mt-2 font-semibold text-sm">{stats?.voted ?? 0} votes cast</div>
             <div className="text-xs text-muted-foreground">Your voting history is private to you.</div>
@@ -196,7 +196,7 @@ function Profile() {
 
 function Stat({ icon, label, value }: any) {
   return (
-    <motion.div whileHover={{ y: -2 }} className="p-3 rounded-2xl glass">
+    <motion.div whileHover={{ y: -2 }} className="p-3 rounded-2xl glass inner-glow">
       <div className="text-ember">{icon}</div>
       <div className="mt-1 text-lg font-bold tabular-nums">{value}</div>
       <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>
@@ -205,7 +205,7 @@ function Stat({ icon, label, value }: any) {
 }
 function Row({ icon, label, value }: any) {
   return (
-    <div className="flex items-center gap-3 p-4 rounded-2xl glass">
+    <div className="flex items-center gap-3 p-4 rounded-2xl glass inner-glow">
       <div className="size-9 rounded-xl bg-ember-soft grid place-items-center text-ember">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="text-[11px] text-muted-foreground uppercase tracking-wider">{label}</div>

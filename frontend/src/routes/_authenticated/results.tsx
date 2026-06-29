@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { AppShell } from "@/components/mobile/AppShell";
 import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 import {
   BarChart3, Users, Vote, TrendingUp, Award, Download, Share2,
   Eye, EyeOff, Search, ChevronDown, ChevronUp, Sparkles, PlusCircle,
@@ -45,7 +46,12 @@ function Results() {
     return list;
   }, [data, q, tab]);
 
-  const exportCSV = () => {
+  const shareAll = () => {
+    navigator.clipboard?.writeText(window.location.origin + "/results");
+    toast.success("Profile results link copied! 🎉");
+  };
+
+  const handleExportCSV = () => {
     const rows = ["title,option,votes"];
     (data ?? []).forEach((p: any) => {
       p.poll_options?.forEach((o: any) => {
@@ -58,13 +64,14 @@ function Results() {
     const a = document.createElement("a");
     a.href = url; a.download = "poll-results.csv"; a.click();
     URL.revokeObjectURL(url);
+    toast.success("CSV report exported! 📊");
   };
 
   return (
     <AppShell title="Your Polls">
       {/* Hero summary */}
       <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-        className="relative p-5 rounded-3xl text-background overflow-hidden"
+        className="relative p-5 rounded-3xl text-background overflow-hidden inner-glow"
         style={{ background: "linear-gradient(135deg, oklch(0.13 0 0), oklch(0.28 0 0))" }}>
         <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 5, repeat: Infinity }}
           className="absolute -top-10 -right-10 size-44 rounded-full"
@@ -92,22 +99,22 @@ function Results() {
 
       {/* Actions */}
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <button onClick={exportCSV} className="p-3 rounded-2xl glass flex flex-col items-center gap-1 active:scale-95 transition">
+        <button onClick={handleExportCSV} className="p-3 rounded-2xl glass inner-glow flex flex-col items-center gap-1 active:scale-95 transition">
           <Download className="size-4 text-ember" />
           <span className="text-[11px] font-medium">Export CSV</span>
         </button>
-        <button className="p-3 rounded-2xl glass flex flex-col items-center gap-1 active:scale-95 transition">
+        <button onClick={shareAll} className="p-3 rounded-2xl glass inner-glow flex flex-col items-center gap-1 active:scale-95 transition">
           <Share2 className="size-4 text-ember" />
           <span className="text-[11px] font-medium">Share</span>
         </button>
-        <Link to="/create" className="p-3 rounded-2xl glass flex flex-col items-center gap-1 active:scale-95 transition">
+        <Link to="/create" className="p-3 rounded-2xl glass inner-glow flex flex-col items-center gap-1 active:scale-95 transition">
           <PlusCircle className="size-4 text-ember" />
           <span className="text-[11px] font-medium">New poll</span>
         </Link>
       </div>
 
       {/* Tabs */}
-      <div className="mt-5 inline-flex p-1 rounded-full glass w-full">
+      <div className="mt-5 inline-flex p-1 rounded-full glass inner-glow w-full">
         {(["active", "closed", "drafts"] as Tab[]).map((t) => (
           <button key={t} onClick={() => setTab(t)}
             className={`flex-1 text-xs font-semibold py-2 rounded-full capitalize transition ${tab === t ? "bg-foreground text-background" : "text-muted-foreground"}`}>
@@ -117,7 +124,7 @@ function Results() {
       </div>
 
       {/* Search */}
-      <label className="mt-3 flex items-center gap-2 px-3 py-2 rounded-2xl glass">
+      <label className="mt-3 flex items-center gap-2 px-3 py-2 rounded-2xl glass inner-glow">
         <Search className="size-4 text-muted-foreground" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your polls…"
           className="flex-1 bg-transparent outline-none text-sm min-w-0" />
@@ -136,9 +143,9 @@ function Results() {
             return (
               <motion.div key={p.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
                 transition={{ delay: Math.min(i * 0.04, 0.2) }}
-                className="p-4 rounded-3xl glass">
+                className="p-4 rounded-3xl glass inner-glow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{p.cover_emoji ?? "🗳️"}</span>
+                  <span className="text-xl">{p.cover_emoji ?? "🗳️ "}</span>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold truncate">{p.title}</div>
                     <div className="text-[11px] text-muted-foreground inline-flex items-center gap-1">
@@ -191,7 +198,8 @@ function Results() {
                           className="flex-1 text-center text-xs font-semibold py-2 rounded-xl bg-foreground text-background">
                           View poll
                         </Link>
-                        <button className="flex-1 text-xs font-semibold py-2 rounded-xl bg-white/60 inline-flex items-center justify-center gap-1">
+                        <button onClick={() => { navigator.clipboard?.writeText(`${window.location.origin}/poll/${p.id}`); toast.success("Poll link copied! 🎉"); }}
+                          className="flex-1 text-xs font-semibold py-2 rounded-xl bg-white/60 inline-flex items-center justify-center gap-1">
                           <Share2 className="size-3.5" /> Share
                         </button>
                       </div>
@@ -204,7 +212,7 @@ function Results() {
         </AnimatePresence>
 
         {filtered.length === 0 && (
-          <div className="text-center py-12 rounded-3xl glass">
+          <div className="text-center py-12 rounded-3xl glass inner-glow">
             <Sparkles className="size-6 mx-auto text-ember" />
             <div className="mt-2 text-sm font-semibold">Nothing in “{tab}”</div>
             <div className="text-xs text-muted-foreground">Create a poll to see results here.</div>
@@ -223,7 +231,7 @@ function Results() {
 function Stat({ icon, label, value }: any) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className="p-3 rounded-2xl glass">
+      className="p-3 rounded-2xl glass inner-glow">
       <div className="text-ember">{icon}</div>
       <div className="mt-1 text-lg font-bold tabular-nums">{value}</div>
       <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>

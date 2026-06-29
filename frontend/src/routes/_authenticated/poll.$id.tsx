@@ -100,7 +100,7 @@ function PollDetail() {
               whileTap={{ scale: 0.98 }}
               disabled={!!myVote}
               onClick={() => setSelected(opt.id)}
-              className={`relative w-full p-4 rounded-2xl text-left overflow-hidden border transition ${
+              className={`relative w-full p-4 rounded-2xl text-left overflow-hidden border transition inner-glow ${
                 isMine ? "border-ember bg-ember-soft" : isSelected ? "border-ember bg-ember-soft" : isLeader ? "border-transparent" : "border-border bg-card"
               }`}
               style={isLeader ? { background: "linear-gradient(135deg, oklch(0.96 0.05 80), oklch(0.94 0.08 36))", boxShadow: `0 8px 24px -10px ${row.color}` } : {}}
@@ -156,7 +156,7 @@ function PollDetail() {
               { label: "Gap", value: `${gap}%`, icon: TrendingUp, glow: "oklch(0.75 0.2 36)" },
             ].map((s, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className="rounded-2xl glass p-3 relative overflow-hidden">
+                className="rounded-2xl glass inner-glow p-3 relative overflow-hidden">
                 <div className="absolute -top-6 -right-6 size-16 rounded-full blur-2xl opacity-60" style={{ background: s.glow }} />
                 <s.icon className="size-3.5 text-muted-foreground" />
                 <div className="mt-1 text-lg font-bold font-display">{s.value}</div>
@@ -165,7 +165,7 @@ function PollDetail() {
             ))}
           </div>
 
-          <div className="rounded-3xl glass p-4">
+          <div className="rounded-3xl glass inner-glow p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="size-4 text-[var(--color-ember)]" />
@@ -184,8 +184,8 @@ function PollDetail() {
               </div>
             </div>
 
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="h-48 w-full relative">
+              <ResponsiveContainer width="99%" height="100%" minWidth={0}>
                 {chartType === "bar" ? (
                   <BarChart data={stats.rows} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                     <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} />
@@ -218,7 +218,7 @@ function PollDetail() {
           </div>
 
           {stats.leader && stats.runnerUp && stats.runnerUp.value > 0 && (
-            <div className="rounded-3xl glass p-4">
+            <div className="rounded-3xl glass inner-glow p-4">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="size-4 text-[var(--color-ember)]" />
                 <div className="text-sm font-semibold">Head-to-head</div>

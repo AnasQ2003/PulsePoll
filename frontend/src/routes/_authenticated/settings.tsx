@@ -48,7 +48,7 @@ function Settings() {
     <AppShell title="Settings">
       <div className="space-y-6 pb-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-3xl p-5 glass overflow-hidden">
+          className="relative rounded-3xl p-5 glass inner-glow overflow-hidden">
           <div className="absolute -top-10 -right-10 size-40 rounded-full blur-3xl opacity-60"
             style={{ background: "radial-gradient(circle, oklch(0.78 0.2 36) 0%, transparent 70%)" }} />
           <div className="relative text-lg font-display font-bold">Customize your experience</div>
@@ -58,7 +58,7 @@ function Settings() {
         {groups.map((g, gi) => (
           <motion.div key={gi} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: gi * 0.05 }}>
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground px-2 mb-2 font-semibold">{g.title}</div>
-            <div className="rounded-3xl glass overflow-hidden">
+            <div className="rounded-3xl glass inner-glow overflow-hidden">
               {g.items.map((it, i) => {
                 const Inner = (
                   <motion.div whileTap={{ scale: 0.98 }}
