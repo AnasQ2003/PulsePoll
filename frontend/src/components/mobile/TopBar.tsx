@@ -55,7 +55,7 @@ export function TopBar({ title, back, right }: { title: string; back?: boolean; 
           ) : (
             <motion.div key="bar"
               initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2"
+              className={`grid items-center gap-2 ${title ? "grid-cols-[auto_minmax(0,1fr)_auto]" : "grid-cols-[auto_1fr_auto]"}`}
             >
               <div className="flex items-center gap-1.5">
                 {back ? (
@@ -82,9 +82,13 @@ export function TopBar({ title, back, right }: { title: string; back?: boolean; 
                 )}
               </div>
 
-              <h1 className="text-center text-[13px] font-semibold text-muted-foreground truncate px-1">
-                {title}
-              </h1>
+              {title ? (
+                <h1 className="text-center text-[13px] font-semibold text-muted-foreground truncate px-1">
+                  {title}
+                </h1>
+              ) : (
+                <div />
+              )}
 
               <div className="flex items-center gap-1.5 justify-end">
                 {right}

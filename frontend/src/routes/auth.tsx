@@ -14,11 +14,11 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("anas@example.com");
+  const [password, setPassword] = useState("anas123");
+  const [name, setName] = useState("Anas");
   const [showPwd, setShowPwd] = useState(false);
-  const [accept, setAccept] = useState(false);
+  const [accept, setAccept] = useState(true);
   const [loading, setLoading] = useState(false);
   const [termsOpen, setTermsOpen] = useState<"terms" | "privacy" | null>(null);
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ function AuthPage() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
                 className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass">
                 <span className="size-1.5 rounded-full bg-[var(--color-ember)] animate-pulse" />
-                <span className="text-[11px] font-semibold tracking-wide text-[var(--color-ember)]">PULSEPOLL</span>
+                <span className="text-[11px] font-semibold tracking-wide text-[var(--color-ember)]">POLLUX</span>
               </motion.div>
               <h1 className="mt-3 text-2xl font-bold leading-tight">
                 <AnimatedText key={mode} text={mode === "login" ? "Welcome back." : "Create account."} />
@@ -145,13 +145,23 @@ function AuthPage() {
                     <Field icon={<UserIcon className="size-4" />} placeholder="Display name" value={name} onChange={setName} />
                   )}
                   <Field icon={<Mail className="size-4" />} placeholder="Email address" value={email} onChange={setEmail} type="email" />
-                  <div className="relative">
-                    <Field icon={<Lock className="size-4" />} placeholder="Password" value={password} onChange={setPassword} type={showPwd ? "text" : "password"} />
+                  
+                  {/* Password Input with inline eye button (prevents overlap) */}
+                  <label className="flex items-center gap-3 px-4 py-3.5 rounded-2xl prominent-field focus-within:ring-2 focus-within:ring-[var(--color-ember)]/40 transition">
+                    <span className="text-muted-foreground"><Lock className="size-4" /></span>
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPwd ? "text" : "password"}
+                      placeholder="Password"
+                      className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground min-w-0"
+                    />
                     <button type="button" onClick={() => setShowPwd((v) => !v)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      className="text-muted-foreground hover:text-foreground transition shrink-0"
+                      aria-label={showPwd ? "Hide password" : "Show password"}>
                       {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
-                  </div>
+                  </label>
 
                   <label className="flex items-start gap-2 pt-1 text-xs text-muted-foreground select-none">
                     <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)}
@@ -166,7 +176,7 @@ function AuthPage() {
 
                   <motion.button
                     whileTap={{ scale: 0.97 }} disabled={loading} type="submit"
-                    className="mt-1 w-full py-3.5 rounded-2xl font-semibold text-background relative overflow-hidden inline-flex items-center justify-center gap-2 glow-orange"
+                    className="mt-1 w-full py-3.5 rounded-2xl font-semibold text-background relative overflow-hidden inline-flex items-center justify-center gap-2 glow-orange animate-pulse"
                     style={{ background: "linear-gradient(135deg, var(--color-ember), oklch(0.55 0.22 36))" }}>
                     <span className="absolute inset-0 shimmer opacity-50" />
                     <span className="relative z-10">{loading ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}</span>
@@ -201,8 +211,8 @@ function AuthPage() {
                 <h2 className="text-xl font-bold">{termsOpen === "terms" ? "Terms of Service" : "Privacy Policy"}</h2>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
                   {termsOpen === "terms"
-                    ? "By using PulsePoll you agree to vote honestly, treat fellow voters respectfully, and accept that poll results are advisory in nature. We may suspend accounts that violate our terms."
-                    : "We collect the minimum data needed to run PulsePoll: your email, profile details you provide, and the votes you cast. Your individual votes are private; only aggregate results are shown."}
+                    ? "By using Pollux you agree to vote honestly, treat fellow voters respectfully, and accept that poll results are advisory in nature. We may suspend accounts that violate our terms."
+                    : "We collect the minimum data needed to run Pollux: your email, profile details you provide, and the votes you cast. Your individual votes are private; only aggregate results are shown."}
                 </p>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
                   Full version available at <Link to={termsOpen === "terms" ? "/terms" : "/privacy"} className="text-[var(--color-ember)] underline">/{termsOpen}</Link>.
@@ -221,10 +231,10 @@ function AuthPage() {
 
 function Field({ icon, value, onChange, ...rest }: any) {
   return (
-    <label className="flex items-center gap-3 px-4 py-3.5 rounded-2xl glass focus-within:ring-2 focus-within:ring-[var(--color-ember)]/40 transition">
+    <label className="flex items-center gap-3 px-4 py-3.5 rounded-2xl prominent-field focus-within:ring-2 focus-within:ring-[var(--color-ember)]/40 transition">
       <span className="text-muted-foreground">{icon}</span>
       <input value={value} onChange={(e) => onChange(e.target.value)} {...rest}
-        className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground" />
+        className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground min-w-0" />
     </label>
   );
 }

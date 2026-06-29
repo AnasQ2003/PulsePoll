@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { AppShell } from "@/components/mobile/AppShell";
 import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 import {
   Sparkles, TrendingUp, Clock, ChevronRight, Flame, Trophy,
   Zap, Users, PlusCircle, Compass, BarChart3, Filter, ArrowUpDown,
@@ -94,14 +95,21 @@ function HomePage() {
     profile?.display_name?.split(" ")[0] ||
     profile?.username ||
     user?.email?.split("@")[0] ||
-    "friend";
+    "Anas";
 
   return (
-    <AppShell title={`Hi, ${firstName} 👋`}>
+    <AppShell title="">
+      {/* Greeting Header */}
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+        <div className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold">
+          {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight">Hi, {firstName} 👋</h1>
+      </motion.div>
       {/* Hero */}
       <motion.section
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl p-5 text-background"
+        className="relative overflow-hidden rounded-3xl p-5 text-background inner-glow"
         style={{ background: "linear-gradient(135deg, oklch(0.13 0 0), oklch(0.28 0 0))" }}
       >
         <motion.div
@@ -135,8 +143,9 @@ function HomePage() {
       {/* Quick actions */}
       <div className="mt-5 grid grid-cols-4 gap-2">
         {quickActions.map((a, i) => (
-          <motion.div key={a.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Link to={a.to} className="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass active:scale-95 transition">
+          <motion.div key={a.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+            whileTap={{ scale: 0.9 }}>
+            <Link to={a.to} className="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass inner-glow active:scale-95 transition">
               <div className="size-10 rounded-xl grid place-items-center text-background" style={{ background: a.tint }}>
                 <a.icon className="size-5" />
               </div>
@@ -213,8 +222,10 @@ function HomePage() {
       )}
 
       {/* Daily challenge */}
-      <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-        className="mt-5 relative overflow-hidden p-4 rounded-3xl glass-strong">
+      <motion.button onClick={() => toast.success("Challenge accepted! Vote on 1 more poll to complete today's streak! 🔥")}
+        initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+        whileTap={{ scale: 0.97 }}
+        className="mt-5 w-full relative overflow-hidden p-4 rounded-3xl glass-strong inner-glow text-left">
         <div className="liquid-blob absolute -right-6 -top-6 size-28 rounded-full" style={{ background: "var(--color-ember)", opacity: 0.4 }} />
         <div className="relative flex items-center gap-3">
           <div className="size-12 rounded-2xl grid place-items-center bg-ember text-background"><Flame className="size-6" /></div>
@@ -227,8 +238,9 @@ function HomePage() {
             </div>
             <div className="mt-1 text-[10px] text-muted-foreground">2 of 3 completed · +20 XP remaining</div>
           </div>
+          <ChevronRight className="size-4 text-muted-foreground shrink-0" />
         </div>
-      </motion.div>
+      </motion.button>
 
       {/* Trending */}
       <div className="mt-6 flex items-center justify-between">
@@ -247,7 +259,7 @@ function HomePage() {
         {filtered.map((p: any, i: number) => (
           <motion.div key={p.id}
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.04, 0.25) }}
-            className="p-4 rounded-3xl glass">
+            className="p-4 rounded-3xl glass inner-glow">
             <Link to="/poll/$id" params={{ id: p.id }} className="block">
               <div className="flex items-start gap-3">
                 <div className="size-12 rounded-2xl bg-ember-soft grid place-items-center text-xl shrink-0">{p.cover_emoji ?? "🗳️"}</div>
@@ -284,10 +296,12 @@ function HomePage() {
       {/* Live activity */}
       <div className="mt-6">
         <h3 className="text-base font-semibold flex items-center gap-2"><Zap className="size-4 text-ember" /> Live activity</h3>
-        <div className="mt-3 rounded-3xl glass overflow-hidden divide-y divide-white/40">
+        <div className="mt-3 rounded-3xl glass inner-glow overflow-hidden divide-y divide-white/40">
           {liveActivity.map((a, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
-              className="flex items-center gap-3 px-4 py-3">
+            <motion.button key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => toast.info(`${a.who} ${a.action} "${a.target}"`)}
+              className="w-full flex items-center gap-3 px-4 py-3 active:bg-white/30 transition text-left">
               <div className="size-9 rounded-full bg-ember-soft grid place-items-center text-ember font-bold text-xs">
                 {a.who[0]}
               </div>
@@ -297,7 +311,7 @@ function HomePage() {
                 <span className="font-medium">{a.target}</span>
               </div>
               <span className="text-[10px] text-muted-foreground shrink-0">{a.t}</span>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -307,8 +321,10 @@ function HomePage() {
         <h3 className="text-base font-semibold flex items-center gap-2"><Trophy className="size-4 text-ember" /> Top voters this week</h3>
         <div className="mt-3 space-y-2">
           {leaderboard.map((u, i) => (
-            <motion.div key={u.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-              className="flex items-center gap-3 p-3 rounded-2xl glass">
+            <motion.button key={u.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => toast.info(`${u.name} has cast ${u.votes.toLocaleString()} votes this week! 🏆`)}
+              className="w-full flex items-center gap-3 p-3 rounded-2xl glass inner-glow active:scale-95 transition text-left">
               <div className="text-xl w-6 text-center">{u.badge}</div>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-sm truncate">{u.name}</div>
@@ -318,7 +334,7 @@ function HomePage() {
                 <motion.div initial={{ width: 0 }} animate={{ width: `${100 - i * 18}%` }} transition={{ duration: 0.7 }}
                   className="h-full bg-ember rounded-full" />
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -334,7 +350,11 @@ function HomePage() {
             <div className="font-bold">Invite friends</div>
             <div className="text-xs text-white/85">Polls are more fun with your crew.</div>
           </div>
-          <button className="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur text-xs font-semibold">Share</button>
+          <motion.button whileTap={{ scale: 0.92 }}
+            onClick={() => { navigator.clipboard?.writeText(window.location.origin); toast.success("App link copied! Share it with your crew 🎉"); }}
+            className="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur text-xs font-semibold active:bg-white/30">
+            Share
+          </motion.button>
         </div>
       </motion.div>
     </AppShell>
