@@ -1,13 +1,32 @@
-import { Link } from "@tanstack/react-router";
-import { Bell, Menu, Search, X } from "lucide-react";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { Bell, Menu, Search, X, ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Drawer } from "./Drawer";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/api";
 
-export function TopBar({ title, right }: { title: string; back?: boolean; right?: React.ReactNode }) {
+export function TopBar({ title, back, right }: { title: string; back?: boolean; right?: React.ReactNode }) {
+  const router = useRouter();
+  const navigate = useNavigate();
   const [drawer, setDrawer] = useState(false);
   const [searching, setSearching] = useState(false);
   const [q, setQ] = useState("");
+
+  const { data: notifications = [] } = useQuery<any[]>({
+    queryKey: ["notifications"],
+    queryFn: () => apiRequest<any[]>("/notifications"),
+  });
+  const hasUnread = notifications.some((n) => n.unread);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (q.trim()) {
+      navigate({ to: "/discover", search: { q } as any });
+      setSearching(false);
+      setQ("");
+    }
+  };
 
   return (
     <>
@@ -20,7 +39,7 @@ export function TopBar({ title, right }: { title: string; back?: boolean; right?
         <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-ember/40 to-transparent" />
         <AnimatePresence mode="wait" initial={false}>
           {searching ? (
-            <motion.div key="search"
+            <motion.form key="search" onSubmit={handleSearch}
               initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
               className="flex items-center gap-2"
             >
@@ -28,29 +47,39 @@ export function TopBar({ title, right }: { title: string; back?: boolean; right?
               <input autoFocus value={q} onChange={(e) => setQ(e.target.value)}
                 placeholder="Search polls, people, topics…"
                 className="flex-1 bg-transparent outline-none text-sm min-w-0" />
-              <button onClick={() => { setSearching(false); setQ(""); }}
+              <button type="button" onClick={() => { setSearching(false); setQ(""); }}
                 className="size-8 grid place-items-center rounded-full bg-white/60">
                 <X className="size-4" />
               </button>
-            </motion.div>
+            </motion.form>
           ) : (
             <motion.div key="bar"
               initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
               className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2"
             >
               <div className="flex items-center gap-1.5">
-                <button onClick={() => setDrawer(true)}
-                  className="size-9 grid place-items-center rounded-full glass active:scale-95 transition"
-                  aria-label="Open menu">
-                  <Menu className="size-5" />
-                </button>
-                <Link to="/home" className="ml-1 flex items-center gap-1.5 shrink-0">
-                  <span className="size-7 rounded-lg grid place-items-center text-background shadow"
-                    style={{ background: "linear-gradient(135deg, var(--color-ember), oklch(0.55 0.22 36))" }}>
-                    <LogoMark />
-                  </span>
-                  <span className="font-display font-bold text-base tracking-tight">PulsePoll</span>
-                </Link>
+                {back ? (
+                  <button onClick={() => router.history.back()}
+                    className="size-9 grid place-items-center rounded-full glass active:scale-95 transition"
+                    aria-label="Go back">
+                    <ChevronLeft className="size-5" />
+                  </button>
+                ) : (
+                  <button onClick={() => setDrawer(true)}
+                    className="size-9 grid place-items-center rounded-full glass active:scale-95 transition"
+                    aria-label="Open menu">
+                    <Menu className="size-5" />
+                  </button>
+                )}
+                {!back && (
+                  <Link to="/home" className="ml-1 flex items-center gap-1.5 shrink-0">
+                    <span className="size-7 rounded-lg grid place-items-center text-background shadow"
+                      style={{ background: "linear-gradient(135deg, var(--color-ember), oklch(0.55 0.22 36))" }}>
+                      <LogoMark />
+                    </span>
+                    <span className="font-display font-bold text-base tracking-tight">PulsePoll</span>
+                  </Link>
+                )}
               </div>
 
               <h1 className="text-center text-[13px] font-semibold text-muted-foreground truncate px-1">
@@ -67,7 +96,9 @@ export function TopBar({ title, right }: { title: string; back?: boolean; right?
                 <Link to="/notifications"
                   className="size-9 grid place-items-center rounded-full glass active:scale-95 transition relative">
                   <Bell className="size-[18px]" />
-                  <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-ember ring-2 ring-white" />
+                  {hasUnread && (
+                    <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-ember ring-2 ring-white" />
+                  )}
                 </Link>
               </div>
             </motion.div>

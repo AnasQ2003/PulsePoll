@@ -119,7 +119,7 @@ function Results() {
       {/* Search */}
       <label className="mt-3 flex items-center gap-2 px-3 py-2 rounded-2xl glass">
         <Search className="size-4 text-muted-foreground" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your pollsâ€¦"
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your polls…"
           className="flex-1 bg-transparent outline-none text-sm min-w-0" />
       </label>
 
@@ -138,11 +138,11 @@ function Results() {
                 transition={{ delay: Math.min(i * 0.04, 0.2) }}
                 className="p-4 rounded-3xl glass">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{p.cover_emoji ?? "ðŸ—³ï¸"}</span>
+                  <span className="text-xl">{p.cover_emoji ?? "🗳️"}</span>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold truncate">{p.title}</div>
                     <div className="text-[11px] text-muted-foreground inline-flex items-center gap-1">
-                      <Clock className="size-3" /> {new Date(p.created_at).toLocaleDateString()} Â· {total} votes
+                      <Clock className="size-3" /> {new Date(p.created_at).toLocaleDateString()} · {total} votes
                     </div>
                   </div>
                   <button onClick={() => setHidden((s) => ({ ...s, [p.id]: !s[p.id] }))}
@@ -157,7 +157,7 @@ function Results() {
 
                 {winner && total > 0 && (
                   <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ember/10 text-ember text-[10px] font-semibold">
-                    <TrendingUp className="size-3" /> Leading: {winner.o.label} Â· {Math.round((winner.c / total) * 100)}%
+                    <TrendingUp className="size-3" /> Leading: {winner.o.label} · {Math.round((winner.c / total) * 100)}%
                   </div>
                 )}
 
@@ -173,7 +173,7 @@ function Results() {
                             <div key={o.id}>
                               <div className="flex justify-between text-xs mb-1">
                                 <span className="truncate">{o.label}</span>
-                                <span className="text-muted-foreground tabular-nums">{pct}% Â· {c}</span>
+                                <span className="text-muted-foreground tabular-nums">{pct}% · {c}</span>
                               </div>
                               <div className="h-2 rounded-full bg-muted overflow-hidden">
                                 <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.7 }}
@@ -183,7 +183,7 @@ function Results() {
                           );
                         })}
                         {(!p.poll_options || p.poll_options.length === 0) && (
-                          <div className="text-xs text-muted-foreground italic">No options yet â€” finish this draft.</div>
+                          <div className="text-xs text-muted-foreground italic">No options yet — finish this draft.</div>
                         )}
                       </div>
                       <div className="mt-3 flex items-center gap-2">
@@ -206,7 +206,7 @@ function Results() {
         {filtered.length === 0 && (
           <div className="text-center py-12 rounded-3xl glass">
             <Sparkles className="size-6 mx-auto text-ember" />
-            <div className="mt-2 text-sm font-semibold">Nothing in â€œ{tab}â€</div>
+            <div className="mt-2 text-sm font-semibold">Nothing in “{tab}”</div>
             <div className="text-xs text-muted-foreground">Create a poll to see results here.</div>
             <Link to="/create" className="mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-ember text-background text-xs font-semibold">
               <PlusCircle className="size-3.5" /> New poll

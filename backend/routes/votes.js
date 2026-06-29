@@ -25,10 +25,10 @@ router.post('/', authenticateToken, async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid Option ID for the specified Poll' });
     }
 
-    // 2. Fetch the poll voting mode
+    // 2. Fetch the poll details
     const pollResult = await pool.request()
       .input('pollId', sql.NVarChar, poll_id)
-      .query('SELECT voting_mode, is_active, closes_at FROM dbo.Polls WHERE id = @pollId');
+      .query('SELECT title, voting_mode, is_active, closes_at, created_by FROM dbo.Polls WHERE id = @pollId');
 
     if (pollResult.recordset.length === 0) {
       return res.status(404).json({ error: 'Poll not found' });
@@ -72,6 +72,20 @@ router.post('/', authenticateToken, async (req, res, next) => {
         OUTPUT inserted.id, inserted.poll_id, inserted.option_id, inserted.user_id, inserted.created_at
         VALUES (@pollId, @optionId, @userId)
       `);
+
+    // 5. Notify the poll creator if someone else votes
+    if (poll.created_by && poll.created_by !== req.user.id) {
+      const voter = req.user.username ? `@${req.user.username}` : 'Someone';
+      await pool.request()
+        .input('creatorId', sql.Int, poll.created_by)
+        .input('title', sql.NVarChar, 'New vote on your poll')
+        .input('body', sql.NVarChar, `${voter} voted on your poll "${poll.title}".`)
+        .input('route', sql.NVarChar, `/poll/${poll_id}`)
+        .query(`
+          INSERT INTO dbo.Notifications (user_id, title, body, icon, route)
+          VALUES (@creatorId, @title, @body, '📊', @route)
+        `);
+    }
 
     res.status(201).json(insertVote.recordset[0]);
   } catch (err) {

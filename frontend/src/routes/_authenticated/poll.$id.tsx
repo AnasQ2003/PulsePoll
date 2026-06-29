@@ -74,7 +74,7 @@ function PollDetail() {
         <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }} transition={{ duration: 6, repeat: Infinity }}
           className="absolute -top-16 -right-16 size-56 rounded-full blur-3xl"
           style={{ background: "radial-gradient(circle, oklch(0.78 0.2 36) 0%, transparent 70%)" }} />
-        <div className="relative text-4xl">{data?.poll?.cover_emoji ?? "ðŸ—³ï¸"}</div>
+        <div className="relative text-4xl">{data?.poll?.cover_emoji ?? "🗳️"}</div>
         <h2 className="relative mt-2 text-xl font-bold">{data?.poll?.title}</h2>
         {data?.poll?.description && <p className="relative mt-2 text-sm text-white/70">{data.poll.description}</p>}
         <div className="relative mt-4 flex items-center gap-3 text-xs text-white/70">

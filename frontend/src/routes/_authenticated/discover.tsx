@@ -1,7 +1,7 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { AppShell } from "@/components/mobile/AppShell";
 import { apiRequest } from "@/lib/api";
 import {
@@ -9,32 +9,50 @@ import {
   LayoutGrid, List as ListIcon, X, Hash, Star, Globe,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/discover")({ component: Discover });
+type DiscoverSearchSchema = {
+  q?: string;
+};
+
+export const Route = createFileRoute("/_authenticated/discover")({
+  validateSearch: (search: Record<string, unknown>): DiscoverSearchSchema => {
+    return {
+      q: (search.q as string) || undefined,
+    };
+  },
+  component: Discover,
+});
 
 const topics = [
-  { key: "all", label: "All", emoji: "ðŸŒ" },
-  { key: "trending", label: "Trending", emoji: "ðŸ”¥" },
-  { key: "fresh", label: "Fresh", emoji: "ðŸŒ±" },
-  { key: "tech", label: "Tech", emoji: "ðŸ’»" },
-  { key: "culture", label: "Culture", emoji: "ðŸŽ­" },
-  { key: "food", label: "Food", emoji: "ðŸœ" },
-  { key: "sports", label: "Sports", emoji: "âš½" },
-  { key: "music", label: "Music", emoji: "ðŸŽ§" },
-  { key: "gaming", label: "Gaming", emoji: "ðŸŽ®" },
+  { key: "all", label: "All", emoji: "🌍" },
+  { key: "trending", label: "Trending", emoji: "🔥" },
+  { key: "fresh", label: "Fresh", emoji: "🌱" },
+  { key: "tech", label: "Tech", emoji: "💻" },
+  { key: "culture", label: "Culture", emoji: "🎭" },
+  { key: "food", label: "Food", emoji: "🍜" },
+  { key: "sports", label: "Sports", emoji: "⚽" },
+  { key: "music", label: "Music", emoji: "🎧" },
+  { key: "gaming", label: "Gaming", emoji: "🎮" },
 ];
 
 const trendingTags = ["#wwdc26", "#ramen", "#remoteWork", "#indieGames", "#f1", "#lofi", "#kdrama", "#travel2026"];
 
 const spotlights = [
-  { title: "Community vote", subtitle: "Help shape next month's theme", emoji: "ðŸŒˆ", grad: "linear-gradient(135deg, oklch(0.7 0.2 320), oklch(0.7 0.2 36))" },
-  { title: "Weekly digest", subtitle: "Top 10 polls of the week", emoji: "ðŸ“°", grad: "linear-gradient(135deg, oklch(0.55 0.18 250), oklch(0.7 0.2 200))" },
-  { title: "Creator spotlight", subtitle: "Meet @priya â€” 50+ polls", emoji: "ðŸŒŸ", grad: "linear-gradient(135deg, oklch(0.6 0.22 36), oklch(0.5 0.2 20))" },
+  { title: "Community vote", subtitle: "Help shape next month's theme", emoji: "🌈", grad: "linear-gradient(135deg, oklch(0.7 0.2 320), oklch(0.7 0.2 36))" },
+  { title: "Weekly digest", subtitle: "Top 10 polls of the week", emoji: "📰", grad: "linear-gradient(135deg, oklch(0.55 0.18 250), oklch(0.7 0.2 200))" },
+  { title: "Creator spotlight", subtitle: "Meet @priya – 50+ polls", emoji: "🌟", grad: "linear-gradient(135deg, oklch(0.6 0.22 36), oklch(0.5 0.2 20))" },
 ];
 
 function Discover() {
-  const [q, setQ] = useState("");
+  const searchParams = Route.useSearch();
+  const [q, setQ] = useState(searchParams.q || "");
   const [topic, setTopic] = useState("all");
   const [view, setView] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    if (searchParams.q !== undefined) {
+      setQ(searchParams.q);
+    }
+  }, [searchParams.q]);
 
   const { data: polls = [] } = useQuery({
     queryKey: ["polls", "discover"],
@@ -62,7 +80,7 @@ function Discover() {
       {/* Search */}
       <label className="flex items-center gap-2 px-4 py-3 rounded-2xl glass">
         <Search className="size-4 text-muted-foreground" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search polls, topics, creatorsâ€¦"
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search polls, topics, creators…"
           className="flex-1 bg-transparent outline-none text-sm min-w-0" />
         {q && <button onClick={() => setQ("")}><X className="size-4 text-muted-foreground" /></button>}
       </label>
@@ -143,14 +161,14 @@ function Discover() {
                 <Link to="/poll/$id" params={{ id: p.id }}
                   className="block p-4 rounded-3xl glass h-full">
                   <div className="flex items-start justify-between">
-                    <div className="text-2xl">{p.cover_emoji ?? "ðŸ—³ï¸"}</div>
+                    <div className="text-2xl">{p.cover_emoji ?? "🗳️"}</div>
                     {(p.votes?.length ?? 0) > 1 && <Flame className="size-3.5 text-ember" />}
                   </div>
                   <div className="mt-2 font-semibold text-sm leading-tight line-clamp-2">{p.title}</div>
                   <div className="mt-2 text-[10px] text-muted-foreground inline-flex items-center gap-1">
                     <Clock className="size-3" /> {new Date(p.created_at).toLocaleDateString()}
                   </div>
-                  <div className="mt-1 text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes Â· {p.poll_options?.length ?? 0} options</div>
+                  <div className="mt-1 text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes · {p.poll_options?.length ?? 0} options</div>
                   <div className="mt-2 h-1 rounded-full bg-muted overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, (p.votes?.length ?? 0) * 10)}%` }}
                       transition={{ duration: 0.6 }} className="h-full bg-ember" />
@@ -165,10 +183,10 @@ function Discover() {
             {filtered.map((p: any, i: number) => (
               <motion.div key={p.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(i * 0.03, 0.2) }}>
                 <Link to="/poll/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 rounded-2xl glass">
-                  <div className="size-11 rounded-2xl bg-ember-soft grid place-items-center text-xl shrink-0">{p.cover_emoji ?? "ðŸ—³ï¸"}</div>
+                  <div className="size-11 rounded-2xl bg-ember-soft grid place-items-center text-xl shrink-0">{p.cover_emoji ?? "🗳️"}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-sm truncate">{p.title}</div>
-                    <div className="text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes Â· {p.category ?? "General"}</div>
+                    <div className="text-[10px] text-muted-foreground">{p.votes?.length ?? 0} votes · {p.category ?? "General"}</div>
                   </div>
                   <Star className="size-4 text-muted-foreground" />
                 </Link>
