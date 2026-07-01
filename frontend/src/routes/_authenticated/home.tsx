@@ -231,7 +231,7 @@ function HomePage() {
           <div className="size-12 rounded-2xl grid place-items-center bg-ember text-background"><Flame className="size-6" /></div>
           <div className="flex-1 min-w-0">
             <div className="text-[10px] uppercase tracking-widest text-ember font-bold">Daily challenge</div>
-            <div className="font-semibold text-sm truncate">Vote on 3 to 4 polls — earn a streak badge</div>
+            <div className="font-semibold text-sm truncate">Vote on 3 polls — earn a streak badge</div>
             <div className="mt-1.5 h-1.5 rounded-full bg-muted overflow-hidden">
               <motion.div initial={{ width: 0 }} animate={{ width: "66%" }} transition={{ duration: 0.9 }}
                 className="h-full rounded-full" style={{ background: "linear-gradient(90deg, var(--color-ember), oklch(0.55 0.22 36))" }} />
