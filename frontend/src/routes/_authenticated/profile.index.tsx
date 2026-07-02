@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import { AppShell } from "@/components/mobile/AppShell";
 import { useAuth } from "@/lib/auth";
 import { apiRequest } from "@/lib/api";
 
-export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
+export const Route = createFileRoute("/_authenticated/profile/")({ component: Profile });
 
 const achievements = [
   { icon: Flame, label: "Streak 7d", tint: "var(--color-ember)" },
@@ -23,6 +23,7 @@ const achievements = [
 ];
 
 function Profile() {
+  const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const [tab, setTab] = useState<"overview" | "polls" | "votes">("overview");
   const [copied, setCopied] = useState(false);
@@ -62,9 +63,9 @@ function Profile() {
 
   return (
     <AppShell title="Profile" right={
-      <Link to="/profile/edit" className="size-9 grid place-items-center rounded-full glass inner-glow">
+      <button onClick={() => navigate({ to: "/profile/edit" })} className="size-9 grid place-items-center rounded-full glass inner-glow active:scale-95 transition" aria-label="Edit Profile">
         <Pencil className="size-4" />
-      </Link>
+      </button>
     }>
       {/* Header card */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -191,10 +192,10 @@ function Profile() {
         )}
       </div>
 
-      <Link to="/profile/edit" className="mt-5 block w-full py-3.5 rounded-2xl font-semibold text-background text-center glow-orange"
+      <button onClick={() => navigate({ to: "/profile/edit" })} className="mt-5 block w-full py-3.5 rounded-2xl font-semibold text-background text-center glow-orange active:scale-[0.99] transition"
         style={{ background: "linear-gradient(135deg, var(--color-ember), oklch(0.55 0.22 36))" }}>
         Edit profile
-      </Link>
+      </button>
 
       <button onClick={() => signOut()}
         className="mt-2 w-full py-3 rounded-2xl bg-destructive/10 text-destructive font-semibold text-sm inline-flex items-center justify-center gap-2">

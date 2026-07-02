@@ -16,11 +16,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedDiscoverRouteImport } from './routes/_authenticated/discover'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
+import { Route as AuthenticatedProfileIndexRouteImport } from './routes/_authenticated/profile.index'
 import { Route as AuthenticatedProfileEditRouteImport } from './routes/_authenticated/profile.edit'
 import { Route as AuthenticatedPollIdRouteImport } from './routes/_authenticated/poll.$id'
 
@@ -58,11 +58,6 @@ const AuthenticatedResultsRoute = AuthenticatedResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedNotificationsRoute =
   AuthenticatedNotificationsRouteImport.update({
     id: '/notifications',
@@ -84,11 +79,17 @@ const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileIndexRoute =
+  AuthenticatedProfileIndexRouteImport.update({
+    id: '/profile/',
+    path: '/profile/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileEditRoute =
   AuthenticatedProfileEditRouteImport.update({
-    id: '/edit',
-    path: '/edit',
-    getParentRoute: () => AuthenticatedProfileRoute,
+    id: '/profile/edit',
+    path: '/profile/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedPollIdRoute = AuthenticatedPollIdRouteImport.update({
   id: '/poll/$id',
@@ -105,11 +106,11 @@ export interface FileRoutesByFullPath {
   '/discover': typeof AuthenticatedDiscoverRoute
   '/home': typeof AuthenticatedHomeRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
-  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/results': typeof AuthenticatedResultsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/poll/$id': typeof AuthenticatedPollIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
+  '/profile/': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -120,11 +121,11 @@ export interface FileRoutesByTo {
   '/discover': typeof AuthenticatedDiscoverRoute
   '/home': typeof AuthenticatedHomeRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
-  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/results': typeof AuthenticatedResultsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/poll/$id': typeof AuthenticatedPollIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
+  '/profile': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -137,11 +138,11 @@ export interface FileRoutesById {
   '/_authenticated/discover': typeof AuthenticatedDiscoverRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/results': typeof AuthenticatedResultsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/poll/$id': typeof AuthenticatedPollIdRoute
   '/_authenticated/profile/edit': typeof AuthenticatedProfileEditRoute
+  '/_authenticated/profile/': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -154,11 +155,11 @@ export interface FileRouteTypes {
     | '/discover'
     | '/home'
     | '/notifications'
-    | '/profile'
     | '/results'
     | '/settings'
     | '/poll/$id'
     | '/profile/edit'
+    | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -169,11 +170,11 @@ export interface FileRouteTypes {
     | '/discover'
     | '/home'
     | '/notifications'
-    | '/profile'
     | '/results'
     | '/settings'
     | '/poll/$id'
     | '/profile/edit'
+    | '/profile'
   id:
     | '__root__'
     | '/'
@@ -185,11 +186,11 @@ export interface FileRouteTypes {
     | '/_authenticated/discover'
     | '/_authenticated/home'
     | '/_authenticated/notifications'
-    | '/_authenticated/profile'
     | '/_authenticated/results'
     | '/_authenticated/settings'
     | '/_authenticated/poll/$id'
     | '/_authenticated/profile/edit'
+    | '/_authenticated/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -251,13 +252,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedResultsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/notifications': {
       id: '/_authenticated/notifications'
       path: '/notifications'
@@ -286,12 +280,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCreateRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile/': {
+      id: '/_authenticated/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AuthenticatedProfileIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile/edit': {
       id: '/_authenticated/profile/edit'
-      path: '/edit'
+      path: '/profile/edit'
       fullPath: '/profile/edit'
       preLoaderRoute: typeof AuthenticatedProfileEditRouteImport
-      parentRoute: typeof AuthenticatedProfileRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/poll/$id': {
       id: '/_authenticated/poll/$id'
@@ -303,26 +304,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedProfileRouteChildren {
-  AuthenticatedProfileEditRoute: typeof AuthenticatedProfileEditRoute
-}
-
-const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
-  AuthenticatedProfileEditRoute: AuthenticatedProfileEditRoute,
-}
-
-const AuthenticatedProfileRouteWithChildren =
-  AuthenticatedProfileRoute._addFileChildren(AuthenticatedProfileRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedDiscoverRoute: typeof AuthenticatedDiscoverRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedResultsRoute: typeof AuthenticatedResultsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedPollIdRoute: typeof AuthenticatedPollIdRoute
+  AuthenticatedProfileEditRoute: typeof AuthenticatedProfileEditRoute
+  AuthenticatedProfileIndexRoute: typeof AuthenticatedProfileIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -330,10 +321,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDiscoverRoute: AuthenticatedDiscoverRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedResultsRoute: AuthenticatedResultsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedPollIdRoute: AuthenticatedPollIdRoute,
+  AuthenticatedProfileEditRoute: AuthenticatedProfileEditRoute,
+  AuthenticatedProfileIndexRoute: AuthenticatedProfileIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
