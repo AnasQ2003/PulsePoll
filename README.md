@@ -668,6 +668,12 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ---
 
+## 👨‍💻 Author
+
+**Anas Ahmed Qureshi.** — [@AnasQ2003](https://github.com/AnasQ2003)
+
+---
+
 <div align="center">
 
 **Built with ❤️ using React, Node.js, and a passion for beautiful UX**
