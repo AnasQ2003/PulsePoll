@@ -644,12 +644,10 @@ We use [Conventional Commits](https://conventionalcommits.org):
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
-
 ```
 MIT License
 
-Copyright (c) 2026 PulsePoll
+Copyright (c) 2024 AnasQ2003
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -675,9 +673,12 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ---
 
 <div align="center">
+  <p>Built with ❤️ by <strong>Anas</strong></p>
+  
+ <div align="center">
 
-**Built with ❤️ using React, Node.js, and a passion for beautiful UX**
+Made with 🔥 and a lot of ☕
 
-⭐ **Star this repo** if you found it useful!
+**⭐ If you found this useful, please star the repository!**
 
 </div>
