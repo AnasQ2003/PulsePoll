@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, User as UserIcon, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { PhoneShell } from "@/components/mobile/PhoneShell";
@@ -22,7 +22,14 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [termsOpen, setTermsOpen] = useState<"terms" | "privacy" | null>(null);
   const navigate = useNavigate();
-  const { setAuthSession } = useAuth();
+  const { setAuthSession, user, ready } = useAuth();
+
+  // If a valid session already exists, skip login and go straight to home
+  useEffect(() => {
+    if (ready && user) {
+      navigate({ to: "/home", replace: true });
+    }
+  }, [ready, user, navigate]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

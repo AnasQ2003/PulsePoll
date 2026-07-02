@@ -37,7 +37,7 @@ function Splash() {
   useEffect(() => {
     if (!ready) return;
     if (pct < 100) return;
-    const t = setTimeout(() => navigate({ to: user ? "/home" : "/auth" }), 220);
+    const t = setTimeout(() => navigate({ to: "/auth" }), 220);
     return () => clearTimeout(t);
   }, [ready, user, navigate, pct]);
 

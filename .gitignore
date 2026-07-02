@@ -1,0 +1,33 @@
+# Root-level gitignore for PulsePoll monorepo
+
+# Node / npm
+node_modules/
+npm-debug.log*
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.production
+
+# Build outputs
+dist/
+build/
+.output/
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vite / TanStack generated
+frontend/src/routeTree.gen.ts
+frontend/.tanstack/
+
+# Logs
+*.log
+logs/
