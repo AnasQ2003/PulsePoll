@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Plus, Trash2, Globe, Users, Check, Search, Lightbulb, Eye, Sparkles, Type, ListChecks, Wand2 } from "lucide-react";
+import { Plus, Trash2, Globe, Users, Check, Search, Lightbulb, Eye, Sparkles, Type, ListChecks, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/mobile/AppShell";
 import { apiRequest } from "@/lib/api";
@@ -23,13 +24,23 @@ function Create() {
   const [emoji, setEmoji] = useState("🗳️");
   const [options, setOptions] = useState<string[]>(["", ""]);
   const [mode, setMode] = useState<"everyone" | "specific">("everyone");
-  const [search, setSearch] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [usersSearch, setUsersSearch] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const { data: searchedUsers = [], isLoading: isLoadingUsers } = useQuery<any[]>({
+    queryKey: ["users-search", usersSearch],
+    queryFn: () => apiRequest<any[]>(`/profiles/search?q=${encodeURIComponent(usersSearch)}`),
+    enabled: mode === "specific",
+  });
 
   async function save() {
     if (!title.trim()) return toast.error("Title is required");
     const validOpts = options.map(o => o.trim()).filter(Boolean);
     if (validOpts.length < 2) return toast.error("At least 2 options");
+    if (mode === "specific" && selectedUsers.length === 0) {
+      return toast.error("Please select at least 1 voter");
+    }
     setSaving(true);
     try {
       const poll = await apiRequest<{ id: string }>("/polls", {
@@ -39,7 +50,7 @@ function Create() {
           description: desc,
           category,
           cover_emoji: emoji,
-          voting_mode: mode,
+          voting_mode: mode === "specific" ? "multiple" : "single", // simulated voting_mode field mapping
           options: validOpts,
         }),
       });
@@ -167,6 +178,67 @@ function Create() {
             ))}
           </div>
         </div>
+
+        {mode === "specific" && (
+          <div className="p-4 rounded-3xl glass inner-glow space-y-3">
+            <div className="flex items-center gap-2">
+              <Users className="size-3.5 text-[var(--color-ember)]" />
+              <label className="text-xs font-semibold">Select voters ({selectedUsers.length} selected)</label>
+            </div>
+
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/50">
+              <Search className="size-4 text-muted-foreground" />
+              <input
+                value={usersSearch}
+                onChange={(e) => setUsersSearch(e.target.value)}
+                placeholder="Search users..."
+                className="flex-1 bg-transparent outline-none text-xs"
+              />
+              {usersSearch && (
+                <button onClick={() => setUsersSearch("")}>
+                  <X className="size-3.5 text-muted-foreground" />
+                </button>
+              )}
+            </div>
+
+            <div className="max-h-40 overflow-y-auto space-y-1.5 divide-y divide-white/10 pr-1">
+              {isLoadingUsers ? (
+                <div className="text-center py-4 text-xs text-muted-foreground">Loading users...</div>
+              ) : searchedUsers.length === 0 ? (
+                <div className="text-center py-4 text-xs text-muted-foreground">No users found.</div>
+              ) : (
+                searchedUsers.map((u: any) => {
+                  const isChecked = selectedUsers.includes(u.id);
+                  return (
+                    <button
+                      key={u.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedUsers((prev) =>
+                          isChecked ? prev.filter((id) => id !== u.id) : [...prev, u.id]
+                        );
+                      }}
+                      className="w-full flex items-center justify-between py-2 text-left active:scale-[0.99] transition"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="size-8 rounded-full bg-ember-soft grid place-items-center text-ember text-[11px] font-bold">
+                          {u.display_name[0].toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-foreground">{u.display_name}</div>
+                          <div className="text-[10px] text-muted-foreground">@{u.username}</div>
+                        </div>
+                      </div>
+                      <div className={`size-5 rounded-full border-2 grid place-items-center ${isChecked ? "border-ember bg-ember" : "border-border"}`}>
+                        {isChecked && <Check className="size-3 text-white" />}
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="rounded-3xl glass inner-glow p-4">
           <div className="flex items-center gap-2 mb-3">

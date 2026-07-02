@@ -106,4 +106,18 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
   }
 });
 
+// Search users by display_name or username
+router.get('/search', authenticateToken, async (req, res, next) => {
+  try {
+    const q = req.query.q || '';
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('q', sql.NVarChar, `%${q}%`)
+      .query('SELECT id, username, display_name, avatar_url FROM dbo.Users WHERE (display_name LIKE @q OR username LIKE @q) AND id <> ' + req.user.id);
+    res.json(result.recordset);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

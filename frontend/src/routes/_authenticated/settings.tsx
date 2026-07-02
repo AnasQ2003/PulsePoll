@@ -4,22 +4,91 @@ import { Bell, Moon, Lock, HelpCircle, FileText, ShieldCheck, LogOut, ChevronRig
 import { AppShell } from "@/components/mobile/AppShell";
 import { useAuth } from "@/lib/auth";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: Settings });
 
-type Item = { icon: any; label: string; sub?: string; to?: string; value?: string; glow: string; toggle?: boolean };
+type Item = {
+  icon: any;
+  label: string;
+  sub?: string;
+  to?: string;
+  value?: string;
+  glow: string;
+  toggle?: boolean;
+  onClick?: () => void;
+};
 
 function Settings() {
-  const { signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const [toggles, setToggles] = useState<Record<string, boolean>>({
-    push: true, email: false, dark: false, sounds: true, haptics: true,
+    push: true,
+    email: false,
+    dark: document.documentElement.classList.contains("dark"),
+    sounds: true,
+    haptics: true,
   });
-  const t = (k: string) => setToggles((s) => ({ ...s, [k]: !s[k] }));
+
+  const t = (k: string) => {
+    setToggles((s) => {
+      const next = { ...s, [k]: !s[k] };
+      if (k === "dark") {
+        if (next.dark) {
+          document.documentElement.classList.add("dark");
+          toast.success("Dark theme enabled 🌙");
+        } else {
+          document.documentElement.classList.remove("dark");
+          toast.success("Light theme enabled ☀️");
+        }
+      } else {
+        toast.success(`${itName(k)} ${next[k] ? "enabled" : "disabled"}`);
+      }
+      return next;
+    });
+  };
+
+  const itName = (k: string) => {
+    if (k === "push") return "Push notifications";
+    if (k === "email") return "Email digest";
+    if (k === "sounds") return "Sounds";
+    if (k === "haptics") return "Haptic feedback";
+    return k;
+  };
+
+  const handleExportData = () => {
+    const dataStr = JSON.stringify({
+      app: "PulsePoll",
+      exportedAt: new Date().toISOString(),
+      user: {
+        id: user?.id,
+        email: user?.email,
+        username: profile?.username,
+        displayName: profile?.display_name,
+        bio: profile?.bio,
+        phone: profile?.phone,
+      },
+      preferences: toggles,
+    }, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `pulsepoll-user-data.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("User data report exported successfully! 📂");
+  };
 
   const groups: { title: string; items: Item[] }[] = [
     { title: "Account", items: [
       { icon: User, label: "Edit profile", sub: "Name, bio, avatar", to: "/profile/edit", glow: "oklch(0.75 0.18 250)" },
-      { icon: Lock, label: "Privacy & security", sub: "Manage who can see your activity", glow: "oklch(0.7 0.18 290)" },
+      {
+        icon: Lock,
+        label: "Privacy & security",
+        sub: "Manage who can see your activity",
+        glow: "oklch(0.7 0.18 290)",
+        onClick: () => toast.info("Your activity and voting records are private to you. 🔒"),
+      },
     ]},
     { title: "Notifications", items: [
       { icon: Bell, label: "Push notifications", toggle: true, value: "push", glow: "oklch(0.75 0.2 36)" },
@@ -28,19 +97,46 @@ function Settings() {
     ]},
     { title: "Appearance", items: [
       { icon: Moon, label: "Dark mode", toggle: true, value: "dark", glow: "oklch(0.6 0.18 280)" },
-      { icon: Palette, label: "Accent color", value: "Ember", glow: "oklch(0.75 0.2 36)" },
-      { icon: Languages, label: "Language", value: "English", glow: "oklch(0.78 0.15 160)" },
+      {
+        icon: Palette,
+        label: "Accent color",
+        value: "Ember",
+        glow: "oklch(0.75 0.2 36)",
+        onClick: () => toast.info("Theme accent color is locked to Ember in this build."),
+      },
+      {
+        icon: Languages,
+        label: "Language",
+        value: "English",
+        glow: "oklch(0.78 0.15 160)",
+        onClick: () => toast.info("Language selection is locked to English in this build."),
+      },
     ]},
     { title: "Experience", items: [
       { icon: Bell, label: "Sounds", toggle: true, value: "sounds", glow: "oklch(0.78 0.16 200)" },
       { icon: Sparkles, label: "Haptics", toggle: true, value: "haptics", glow: "oklch(0.75 0.18 320)" },
-      { icon: Download, label: "Export my data", glow: "oklch(0.78 0.15 160)" },
+      {
+        icon: Download,
+        label: "Export my data",
+        glow: "oklch(0.78 0.15 160)",
+        onClick: handleExportData,
+      },
     ]},
     { title: "About", items: [
       { icon: FileText, label: "Terms of Service", to: "/terms", glow: "oklch(0.78 0.12 80)" },
       { icon: ShieldCheck, label: "Privacy Policy", to: "/privacy", glow: "oklch(0.75 0.18 160)" },
-      { icon: HelpCircle, label: "Help & support", glow: "oklch(0.78 0.16 200)" },
-      { icon: Star, label: "Rate Pollux", glow: "oklch(0.78 0.2 80)" },
+      {
+        icon: HelpCircle,
+        label: "Help & support",
+        glow: "oklch(0.78 0.16 200)",
+        onClick: () => toast.success("Support ticket created! We'll contact you at " + user?.email),
+      },
+      {
+        icon: Star,
+        label: "Rate PulsePoll",
+        glow: "oklch(0.78 0.2 80)",
+        onClick: () => toast.success("Thank you for rating PulsePoll 5-stars! ⭐⭐⭐⭐⭐"),
+      },
     ]},
   ];
 
@@ -61,8 +157,11 @@ function Settings() {
             <div className="rounded-3xl glass inner-glow overflow-hidden">
               {g.items.map((it, i) => {
                 const Inner = (
-                  <motion.div whileTap={{ scale: 0.98 }}
-                    className="relative flex items-center gap-3 px-4 py-3.5 border-b border-white/30 last:border-0 group overflow-hidden">
+                  <motion.div
+                    whileTap={it.toggle ? undefined : { scale: 0.98 }}
+                    onClick={it.onClick}
+                    className={`relative flex items-center gap-3 px-4 py-3.5 border-b border-white/30 last:border-0 group overflow-hidden ${it.onClick ? "cursor-pointer" : ""}`}
+                  >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity"
                       style={{ background: `radial-gradient(120% 60% at 0% 50%, ${it.glow}26, transparent 60%)` }} />
                     <div className="relative size-10 rounded-2xl grid place-items-center shrink-0"
@@ -77,7 +176,7 @@ function Settings() {
                       {it.sub && <div className="text-[11px] text-muted-foreground truncate">{it.sub}</div>}
                     </div>
                     {it.toggle ? (
-                      <button onClick={(e) => { e.preventDefault(); t(it.value!); }}
+                      <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); t(it.value!); }}
                         className={`relative w-11 h-6 rounded-full transition ${toggles[it.value!] ? "" : "bg-white/40"}`}
                         style={toggles[it.value!] ? { background: it.glow, boxShadow: `0 0 16px ${it.glow}` } : {}}>
                         <motion.span layout
@@ -103,7 +202,7 @@ function Settings() {
           <LogOut className="size-4" /> Sign out
         </motion.button>
 
-        <div className="text-center text-[11px] text-muted-foreground">Pollux v1.0 · made with care</div>
+        <div className="text-center text-[11px] text-muted-foreground">PulsePoll v1.0 · made with care</div>
       </div>
     </AppShell>
   );

@@ -50,6 +50,16 @@ function Profile() {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleShareProfile = () => {
+    const url = `${window.location.origin}/profile`;
+    if (navigator.share) {
+      navigator.share({ title: `${profile?.display_name || "User"}'s Profile`, url }).catch(() => {});
+    } else {
+      navigator.clipboard?.writeText(url);
+      toast.success("Profile link copied! 🔗");
+    }
+  };
+
   return (
     <AppShell title="Profile" right={
       <Link to="/profile/edit" className="size-9 grid place-items-center rounded-full glass inner-glow">
@@ -98,7 +108,7 @@ function Profile() {
           <button onClick={handleCopy} className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-full bg-white/15 backdrop-blur text-xs font-semibold">
             {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />} {copied ? "Copied" : "Copy handle"}
           </button>
-          <button className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-full bg-white/15 backdrop-blur text-xs font-semibold">
+          <button onClick={handleShareProfile} className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-full bg-white/15 backdrop-blur text-xs font-semibold">
             <Share2 className="size-3.5" /> Share
           </button>
         </div>
@@ -151,7 +161,9 @@ function Profile() {
             <Link to="/settings" className="block">
               <Row icon={<Settings className="size-4" />} label="Settings" value="Privacy, theme, account" />
             </Link>
-            <Row icon={<Bookmark className="size-4" />} label="Saved polls" value="12 saved" />
+            <Link to="/results" className="block">
+              <Row icon={<Bookmark className="size-4" />} label="Saved polls" value="View saved polls" />
+            </Link>
           </div>
         )}
         {tab === "polls" && (
