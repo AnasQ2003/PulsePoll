@@ -177,10 +177,14 @@ function Settings() {
                     </div>
                     {it.toggle ? (
                       <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); t(it.value!); }}
-                        className={`relative w-11 h-6 rounded-full transition ${toggles[it.value!] ? "" : "bg-white/40"}`}
+                        className={`relative w-11 h-6 rounded-full transition-colors duration-200 outline-none border focus:outline-none ${
+                          toggles[it.value!]
+                            ? "border-transparent"
+                            : "bg-black/10 dark:bg-white/10 border-black/10 dark:border-white/10"
+                        }`}
                         style={toggles[it.value!] ? { background: it.glow, boxShadow: `0 0 16px ${it.glow}` } : {}}>
                         <motion.span layout
-                          className="absolute top-0.5 size-5 rounded-full bg-white shadow"
+                          className="absolute top-0.5 size-5 rounded-full bg-white shadow-sm"
                           style={{ left: toggles[it.value!] ? 22 : 2 }} />
                       </button>
                     ) : it.value ? (

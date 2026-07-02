@@ -111,7 +111,7 @@ function HomePage() {
   function handleShare(poll: any) {
     const url = `${window.location.origin}/poll/${poll.id}`;
     if (navigator.share) {
-      navigator.share({ title: poll.title, url }).catch(() => {});
+      navigator.share({ title: poll.title, url }).catch(() => { });
     } else {
       navigator.clipboard?.writeText(url);
       toast.success("Poll link copied! 🔗");
@@ -129,7 +129,7 @@ function HomePage() {
         <div className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold">
           {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}
         </div>
-        <h1 className="text-2xl font-bold tracking-tight">Hi, {firstName} 👋</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Hi, {firstName}</h1>
       </motion.div>
 
       {/* Hero */}
@@ -419,7 +419,7 @@ function HomePage() {
           <motion.button whileTap={{ scale: 0.92 }}
             onClick={() => {
               if (navigator.share) {
-                navigator.share({ title: "PulsePoll", url: window.location.origin }).catch(() => {});
+                navigator.share({ title: "PulsePoll", url: window.location.origin }).catch(() => { });
               } else {
                 navigator.clipboard?.writeText(window.location.origin);
                 toast.success("App link copied! Share it with your crew 🎉");
