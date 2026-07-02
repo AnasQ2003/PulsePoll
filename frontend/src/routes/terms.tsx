@@ -68,6 +68,20 @@ export const Route = createFileRoute("/terms")({
             <p>PulsePoll is provided to you on an "AS IS" and "AS AVAILABLE" basis, without warranty of any kind, express or implied. Poll outcomes are purely advisory and hold no legal, binding, or financial authority. We do not guarantee that the app will be uninterrupted, bug-free, or entirely secure from malicious intrusion.</p>
           </section>
 
+          <section className="space-y-2">
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <ShieldAlert className="size-4 text-ember shrink-0" /> 6. Account Suspension & Termination
+            </h2>
+            <p>We reserve the right, in our sole discretion, to suspend, disable, or permanently terminate your account and access to PulsePoll without prior notice or liability if we detect violations of these terms, fraudulent actions, automated scripting (bots), user harassment, or behavior detrimental to the integrity of our polling ecosystem.</p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Scale className="size-4 text-ember shrink-0" /> 7. Amendments & Modifications
+            </h2>
+            <p>PulsePoll reserves the right to revise, update, or modify these Terms of Service at any time. When modifications are published, we will update the active status indicators. Your continued use of the application after such alterations constitutes your full binding acknowledgment and acceptance of the updated Terms.</p>
+          </section>
+
           <div className="p-4 rounded-2xl glass-strong text-center text-[10px] text-muted-foreground">
             © 2026 PulsePoll Inc. All rights reserved. Registered address: 128 Innovation Way, Suite 400. Contact: legal@pulsepoll.app.
           </div>

@@ -109,38 +109,96 @@
   h1,h2,h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
 }
 
-/* Mobile phone frame */
+/* Custom ambient body background for premium desktop preview */
+body {
+  background-color: oklch(0.12 0 0);
+  background-image: 
+    radial-gradient(ellipse at 80% 20%, oklch(0.25 0.12 36 / 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, oklch(0.22 0.08 250 / 0.12) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Mobile phone frame container & bezel */
+.phone-container {
+  position: relative;
+  padding: 0;
+  display: inline-flex;
+}
+
 .phone-frame {
-  width: 100%;
-  max-width: 420px;
-  height: min(900px, 100dvh);
-  background:
-    radial-gradient(700px 500px at 85% -10%, oklch(0.92 0.10 36 / 0.65) 0%, transparent 60%),
-    radial-gradient(650px 500px at -10% 110%, oklch(0.90 0.10 250 / 0.6) 0%, transparent 60%),
-    radial-gradient(600px 450px at 50% 50%, oklch(0.92 0.08 320 / 0.4) 0%, transparent 60%),
-    linear-gradient(180deg, oklch(0.99 0.01 60) 0%, oklch(0.98 0.02 280) 100%);
-  border-radius: 44px;
-  box-shadow:
-    0 60px 120px -40px oklch(0 0 0 / 0.35),
-    0 8px 30px -10px oklch(0 0 0 / 0.15),
-    inset 0 0 0 1px oklch(1 0 0 / 0.6),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.9);
-  overflow: hidden;
+  width: 393px;
+  height: 852px;
+  max-height: 94vh;
+  aspect-ratio: 393 / 852;
+  background: var(--color-background);
+  border-radius: 48px;
+  border: 11px solid #161618;
+  outline: 2px solid #2d2d30;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  box-shadow: 
+    0 30px 70px -15px rgba(0, 0, 0, 0.9),
+    0 10px 30px -10px rgba(0, 0, 0, 0.4),
+    inset 0 0 4px rgba(255, 255, 255, 0.05);
 }
-@media (max-width: 480px) {
-  .phone-frame { max-width: 100%; height: 100dvh; border-radius: 0; box-shadow: none; }
-}
-
 
 .notch {
-  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-  width: 110px; height: 28px; background: oklch(0.13 0 0); border-radius: 999px;
-  z-index: 50; pointer-events: none;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 25px;
+  background: #000;
+  border-radius: 999px;
+  z-index: 99;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-@media (max-width: 480px) { .notch { display: none; } }
+
+/* Force all toast notifications to render exactly in the center of the viewport */
+[data-sonner-toaster] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  bottom: auto !important;
+  right: auto !important;
+  z-index: 99999 !important;
+  pointer-events: none;
+}
+[data-sonner-toaster] > ol {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: scale(1.05) !important;
+}
+
+/* Responsive: on real phone screens, hide the mockup bezels and buttons */
+@media (max-width: 768px) {
+  .phone-container {
+    width: 100% !important;
+    height: 100dvh !important;
+  }
+  .phone-frame {
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    aspect-ratio: auto !important;
+  }
+  .notch {
+    display: none !important;
+  }
+}
 
 .hide-scroll::-webkit-scrollbar { display: none; }
 .hide-scroll { scrollbar-width: none; }

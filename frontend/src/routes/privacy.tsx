@@ -67,6 +67,20 @@ export const Route = createFileRoute("/privacy")({
             <p>If you have questions regarding this policy or wish to request data export or deletion under GDPR / CCPA guidelines, please contact us at privacy@pulsepoll.app.</p>
           </section>
 
+          <section className="space-y-2">
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Database className="size-4 text-ember shrink-0" /> 6. Cookie Policy & Local Browser Storage
+            </h2>
+            <p>PulsePoll uses local storage mechanisms (such as localStorage and session cookies) strictly to maintain your logged-in state, save your theme preferences, and prevent repeat-voting abuses. We do not deploy third-party advertising cookies, cross-site trackers, or tracking pixels of any kind.</p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-foreground font-bold text-sm flex items-center gap-1.5">
+              <Key className="size-4 text-ember shrink-0" /> 7. Children's Data Protection Policy
+            </h2>
+            <p>PulsePoll is not directed at or designed to collect information from children under 13 years of age. If we learn that we have inadvertently collected personal details from an individual under 13 without verified parental consent, we will take swift action to purge that data immediately from our active databases.</p>
+          </section>
+
           <div className="p-4 rounded-2xl glass-strong text-center text-[10px] text-muted-foreground">
             © 2026 PulsePoll Inc. All rights reserved. Registered address: 128 Innovation Way, Suite 400. Contact: legal@pulsepoll.app.
           </div>
