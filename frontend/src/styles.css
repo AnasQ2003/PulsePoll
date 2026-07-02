@@ -159,9 +159,26 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+/* Keep all toast notifications inside the phone screen, clearing the notch */
+.phone-frame [data-sonner-toaster] {
+  position: absolute !important;
+  top: 44px !important; /* Pushes below the notch on desktop preview */
+  left: 16px !important;
+  right: 16px !important;
+  width: calc(100% - 32px) !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 99999 !important;
+}
 
-
-
+@media (max-width: 768px) {
+  .phone-frame [data-sonner-toaster] {
+    top: env(safe-area-inset-top, 16px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: calc(100% - 32px) !important;
+  }
+}
 
 /* Responsive: on real phone screens, hide the mockup bezels and buttons */
 @media (max-width: 768px) {

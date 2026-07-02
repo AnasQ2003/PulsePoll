@@ -1,6 +1,9 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { Toaster } from "sonner";
 
 export function PhoneShell({ children }: { children: ReactNode }) {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
   return (
     <div className="min-h-dvh w-full flex items-center justify-center p-0 md:p-6 overflow-hidden relative">
       {/* Ambient background glows for desktop preview mode */}
@@ -26,8 +29,24 @@ export function PhoneShell({ children }: { children: ReactNode }) {
             <div className="w-10 h-1.5 rounded-full bg-[#0d0d0d] opacity-90" />
           </div>
 
-          {/* Phone Screen Glass Wrapper */}
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative md:rounded-[37px] bg-background">
+          {/* Phone Screen Glass Wrapper
+              transform: translateZ(0) makes this a containing block for fixed children,
+              so sonner's fixed-position toasts are clipped & positioned within this div. */}
+          <div
+            ref={setContainer}
+            className="flex-1 flex flex-col min-h-0 overflow-hidden relative md:rounded-[37px] bg-background"
+            style={{ transform: "translateZ(0)" }}
+          >
+            {container && (
+              <Toaster
+                richColors
+                position="top-center"
+                container={container}
+                toastOptions={{
+                  style: { maxWidth: "90%", fontSize: "13px" },
+                }}
+              />
+            )}
             {children}
           </div>
 
