@@ -146,7 +146,7 @@ The app is rendered as a **phone mockup on desktop** and transitions to a **full
 
 ## 📱 Screenshots
 
-> All 33 screens captured from the live application
+> All screens captured from the live application
 
 ### Onboarding
 
