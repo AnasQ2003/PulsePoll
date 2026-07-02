@@ -86,48 +86,59 @@ function Notifications() {
           const glow = mapping.glow;
 
           return (
-            <motion.div key={it.id}
-              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+          <motion.div key={it.id}
+            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+          >
+            <Link
+              to={it.route || "/home"}
+              className={`relative block p-4 rounded-2xl overflow-hidden active:scale-[0.99] transition
+                ${it.unread
+                  ? "inner-glow border border-ember/20 bg-gradient-to-br from-white/90 to-white/60 shadow-sm"
+                  : "glass opacity-70"
+                }`}
             >
-              <Link
-                to={it.route || "/home"}
-                className="relative block p-4 rounded-2xl glass inner-glow overflow-hidden active:scale-[0.99] transition"
-              >
-                {/* Colored inner glow */}
+              {/* Unread left accent bar */}
+              {it.unread && (
                 <div
-                  className="pointer-events-none absolute -left-6 -top-6 size-32 rounded-full"
-                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: 0.35, filter: "blur(8px)" }}
+                  className="absolute left-0 inset-y-0 w-1 rounded-full"
+                  style={{ background: glow }}
                 />
-                <div
-                  className="pointer-events-none absolute -right-10 -bottom-10 size-28 rounded-full"
-                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: 0.22, filter: "blur(10px)" }}
-                />
+              )}
+              {/* Colored inner glow */}
+              <div
+                className="pointer-events-none absolute -left-6 -top-6 size-32 rounded-full"
+                style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: it.unread ? 0.35 : 0.15, filter: "blur(8px)" }}
+              />
+              <div
+                className="pointer-events-none absolute -right-10 -bottom-10 size-28 rounded-full"
+                style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, opacity: it.unread ? 0.22 : 0.08, filter: "blur(10px)" }}
+              />
 
-                <div className="relative flex gap-3">
-                  <div
-                    className="size-11 rounded-2xl grid place-items-center shrink-0 text-background"
-                    style={{
-                      background: `linear-gradient(135deg, ${glow}, color-mix(in oklch, ${glow} 60%, white))`,
-                      boxShadow: `0 8px 24px -8px ${glow}`,
-                    }}
-                  >
-                    <Icon className="size-5" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="font-semibold text-sm flex items-center gap-1.5">
-                        {it.title}
-                        {it.unread && (
-                          <span className="size-1.5 rounded-full" style={{ background: glow, boxShadow: `0 0 8px ${glow}` }} />
-                        )}
-                      </div>
-                      <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(it.created_at)}</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{it.body}</div>
-                  </div>
+              <div className="relative flex gap-3">
+                <div
+                  className={`size-11 rounded-2xl grid place-items-center shrink-0 text-background ${!it.unread ? "opacity-60" : ""}`}
+                  style={{
+                    background: `linear-gradient(135deg, ${glow}, color-mix(in oklch, ${glow} 60%, white))`,
+                    boxShadow: it.unread ? `0 8px 24px -8px ${glow}` : "none",
+                  }}
+                >
+                  <Icon className="size-5" />
                 </div>
-              </Link>
-            </motion.div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className={`text-sm flex items-center gap-1.5 ${it.unread ? "font-bold" : "font-medium text-muted-foreground"}`}>
+                      {it.title}
+                      {it.unread && (
+                        <span className="size-2 rounded-full" style={{ background: glow, boxShadow: `0 0 8px ${glow}` }} />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(it.created_at)}</span>
+                  </div>
+                  <div className={`text-xs mt-1 leading-relaxed ${it.unread ? "text-foreground/80" : "text-muted-foreground"}`}>{it.body}</div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
           );
         })}
 

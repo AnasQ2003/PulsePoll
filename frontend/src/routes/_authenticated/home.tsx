@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/mobile/AppShell";
@@ -35,29 +35,29 @@ const quickActions = [
   { to: "/notifications", label: "Alerts", icon: Zap, tint: "oklch(0.60 0.22 320)" },
 ] as const;
 
-const liveActivity = [
-  { who: "Maya", action: "voted on", target: "Best ramen in town", t: "now" },
-  { who: "Jordan", action: "created", target: "WWDC 2026 hype check", t: "1m" },
-  { who: "Sana", action: "voted on", target: "Remote vs office", t: "3m" },
-  { who: "Liam", action: "shared", target: "Top sci-fi of the year", t: "6m" },
-  { who: "Noor", action: "commented on", target: "Best coffee bean origin", t: "9m" },
-];
-
-const leaderboard = [
-  { name: "Avery W.", votes: 1280, badge: "🥇" },
-  { name: "Kenji T.", votes: 942, badge: "🥈" },
-  { name: "Priya R.", votes: 711, badge: "🥉" },
-  { name: "Marco D.", votes: 503, badge: "4" },
-];
-
 const sortOptions = [
   { key: "recent", label: "Most recent" },
   { key: "popular", label: "Most votes" },
   { key: "az", label: "A → Z" },
 ] as const;
 
+const RANK_BADGES = ["🥇", "🥈", "🥉", "4", "5", "6", "7", "8", "9", "10"];
+
+function getRelativeTime(dateStr: string) {
+  const elapsed = Date.now() - new Date(dateStr).getTime();
+  const minutes = Math.floor(elapsed / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (minutes < 1) return "now";
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  return `${days}d`;
+}
+
 function HomePage() {
   const { user, profile } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
   const [category, setCategory] = useState<string>("all");
   const [sort, setSort] = useState<(typeof sortOptions)[number]["key"]>("recent");
   const [sortOpen, setSortOpen] = useState(false);
@@ -69,6 +69,17 @@ function HomePage() {
   const { data: polls = [] } = useQuery({
     queryKey: ["polls", "all"],
     queryFn: () => apiRequest<any[]>("/polls"),
+  });
+
+  const { data: leaderboard = [] } = useQuery<any[]>({
+    queryKey: ["leaderboard"],
+    queryFn: () => apiRequest<any[]>("/stats/leaderboard"),
+  });
+
+  const { data: activityFeed = [] } = useQuery<any[]>({
+    queryKey: ["activity"],
+    queryFn: () => apiRequest<any[]>("/stats/activity"),
+    refetchInterval: 30_000, // refresh every 30s
   });
 
   const filtered = useMemo(() => {
@@ -95,7 +106,21 @@ function HomePage() {
     profile?.display_name?.split(" ")[0] ||
     profile?.username ||
     user?.email?.split("@")[0] ||
-    "Anas";
+    "there";
+
+  function handleShare(poll: any) {
+    const url = `${window.location.origin}/poll/${poll.id}`;
+    if (navigator.share) {
+      navigator.share({ title: poll.title, url }).catch(() => {});
+    } else {
+      navigator.clipboard?.writeText(url);
+      toast.success("Poll link copied! 🔗");
+    }
+  }
+
+  function handleComment(poll: any) {
+    navigate({ to: "/poll/$id", params: { id: poll.id } });
+  }
 
   return (
     <AppShell title="">
@@ -106,6 +131,7 @@ function HomePage() {
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Hi, {firstName} 👋</h1>
       </motion.div>
+
       {/* Hero */}
       <motion.section
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -273,19 +299,47 @@ function HomePage() {
                 </div>
               </div>
             </Link>
+
+            {/* Action bar */}
             <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
-              <button onClick={() => setLiked((s) => ({ ...s, [p.id]: !s[p.id] }))}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition ${liked[p.id] ? "bg-ember/15 text-ember" : "hover:bg-white/60"}`}>
-                <Heart className={`size-3.5 ${liked[p.id] ? "fill-current" : ""}`} /> {(p.vote_count ?? 0) + (liked[p.id] ? 1 : 0)}
+              {/* Like / heart — optimistic UI */}
+              <button
+                onClick={() => setLiked((s) => ({ ...s, [p.id]: !s[p.id] }))}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition ${liked[p.id] ? "bg-ember/15 text-ember" : "hover:bg-white/60"}`}
+                aria-label="Like this poll"
+              >
+                <Heart className={`size-3.5 ${liked[p.id] ? "fill-current" : ""}`} />
+                {(p.vote_count ?? 0) + (liked[p.id] ? 1 : 0)}
               </button>
-              <button className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-white/60">
-                <MessageCircle className="size-3.5" /> {Math.floor((p.vote_count ?? 0) / 2)}
+
+              {/* Comment — navigates to poll detail */}
+              <button
+                onClick={() => handleComment(p)}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-white/60 transition"
+                aria-label="Comment on this poll"
+              >
+                <MessageCircle className="size-3.5" />
+                {p.vote_count ?? 0}
               </button>
-              <button className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-white/60">
+
+              {/* Share — native share or copy link */}
+              <button
+                onClick={() => handleShare(p)}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-white/60 transition"
+                aria-label="Share this poll"
+              >
                 <Share2 className="size-3.5" /> Share
               </button>
-              <button onClick={() => setSaved((s) => ({ ...s, [p.id]: !s[p.id] }))}
-                className={`ml-auto size-7 grid place-items-center rounded-full transition ${saved[p.id] ? "bg-ember text-background" : "hover:bg-white/60"}`}>
+
+              {/* Bookmark */}
+              <button
+                onClick={() => {
+                  setSaved((s) => ({ ...s, [p.id]: !s[p.id] }));
+                  toast.success(saved[p.id] ? "Removed from saved" : "Poll saved! 🔖");
+                }}
+                className={`ml-auto size-7 grid place-items-center rounded-full transition ${saved[p.id] ? "bg-ember text-background" : "hover:bg-white/60"}`}
+                aria-label="Save this poll"
+              >
                 <Bookmark className={`size-3.5 ${saved[p.id] ? "fill-current" : ""}`} />
               </button>
             </div>
@@ -293,46 +347,58 @@ function HomePage() {
         ))}
       </div>
 
-      {/* Live activity */}
+      {/* Live activity — real data from backend */}
       <div className="mt-6">
         <h3 className="text-base font-semibold flex items-center gap-2"><Zap className="size-4 text-ember" /> Live activity</h3>
         <div className="mt-3 rounded-3xl glass inner-glow overflow-hidden divide-y divide-white/40">
-          {liveActivity.map((a, i) => (
+          {activityFeed.length === 0 && (
+            <div className="px-4 py-5 text-center text-xs text-muted-foreground">No recent activity yet. Start voting!</div>
+          )}
+          {activityFeed.slice(0, 8).map((a: any, i: number) => (
             <motion.button key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => toast.info(`${a.who} ${a.action} "${a.target}"`)}
+              onClick={() => navigate({ to: "/poll/$id", params: { id: a.poll_id } })}
               className="w-full flex items-center gap-3 px-4 py-3 active:bg-white/30 transition text-left">
               <div className="size-9 rounded-full bg-ember-soft grid place-items-center text-ember font-bold text-xs">
-                {a.who[0]}
+                {(a.who ?? "?")[0].toUpperCase()}
               </div>
               <div className="flex-1 min-w-0 text-xs">
                 <span className="font-semibold">{a.who}</span>{" "}
                 <span className="text-muted-foreground">{a.action}</span>{" "}
-                <span className="font-medium">{a.target}</span>
+                <span className="font-medium truncate">"{a.poll_title}"</span>
               </div>
-              <span className="text-[10px] text-muted-foreground shrink-0">{a.t}</span>
+              <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(a.created_at)}</span>
             </motion.button>
           ))}
         </div>
       </div>
 
-      {/* Leaderboard */}
+      {/* Leaderboard — real data from backend */}
       <div className="mt-6">
         <h3 className="text-base font-semibold flex items-center gap-2"><Trophy className="size-4 text-ember" /> Top voters this week</h3>
         <div className="mt-3 space-y-2">
-          {leaderboard.map((u, i) => (
-            <motion.button key={u.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
+          {leaderboard.length === 0 && (
+            <div className="rounded-3xl glass p-6 text-center text-xs text-muted-foreground">
+              No votes yet — be the first on the leaderboard! 🏆
+            </div>
+          )}
+          {leaderboard.slice(0, 5).map((u: any, i: number) => (
+            <motion.button key={u.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => toast.info(`${u.name} has cast ${u.votes.toLocaleString()} votes this week! 🏆`)}
+              onClick={() => toast.info(`${u.display_name} has cast ${Number(u.vote_count).toLocaleString()} vote${u.vote_count === 1 ? "" : "s"}! 🏆`)}
               className="w-full flex items-center gap-3 p-3 rounded-2xl glass inner-glow active:scale-95 transition text-left">
-              <div className="text-xl w-6 text-center">{u.badge}</div>
+              <div className="text-xl w-6 text-center">{RANK_BADGES[i] ?? String(i + 1)}</div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm truncate">{u.name}</div>
-                <div className="text-[11px] text-muted-foreground">{u.votes.toLocaleString()} votes</div>
+                <div className="font-semibold text-sm truncate">{u.display_name}</div>
+                <div className="text-[11px] text-muted-foreground">@{u.username} · {Number(u.vote_count).toLocaleString()} votes</div>
               </div>
               <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${100 - i * 18}%` }} transition={{ duration: 0.7 }}
-                  className="h-full bg-ember rounded-full" />
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: leaderboard[0]?.vote_count > 0 ? `${(u.vote_count / leaderboard[0].vote_count) * 100}%` : "0%" }}
+                  transition={{ duration: 0.7 }}
+                  className="h-full bg-ember rounded-full"
+                />
               </div>
             </motion.button>
           ))}
@@ -351,7 +417,14 @@ function HomePage() {
             <div className="text-xs text-white/85">Polls are more fun with your crew.</div>
           </div>
           <motion.button whileTap={{ scale: 0.92 }}
-            onClick={() => { navigator.clipboard?.writeText(window.location.origin); toast.success("App link copied! Share it with your crew 🎉"); }}
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: "PulsePoll", url: window.location.origin }).catch(() => {});
+              } else {
+                navigator.clipboard?.writeText(window.location.origin);
+                toast.success("App link copied! Share it with your crew 🎉");
+              }
+            }}
             className="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur text-xs font-semibold active:bg-white/30">
             Share
           </motion.button>

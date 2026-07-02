@@ -35,6 +35,7 @@ app.use('/api/polls',         require('./routes/polls'));
 app.use('/api/votes',         require('./routes/votes'));
 app.use('/api/profiles',      require('./routes/profiles'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/stats',         require('./routes/stats'));
 
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {

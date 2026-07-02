@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouterState } from "@tanstack/react-router";
 import { TopBar } from "./TopBar";
@@ -6,10 +7,18 @@ import type { ReactNode } from "react";
 
 export function AppShell({ title, back, right, children }: { title: string; back?: boolean; right?: ReactNode; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const scrollRef = useRef<HTMLElement>(null);
+
+  // Scroll to top whenever the route changes
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "instant" });
+  }, [path]);
+
   return (
     <div className="h-full flex flex-col bg-background">
       <TopBar title={title} back={back} right={right} />
       <motion.main
+        ref={scrollRef}
         key={path}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
   Home, Compass, BarChart3, User, PlusCircle, Bell, Settings,
-  FileText, ShieldCheck, LogOut, Sparkles, UserCog, X, HelpCircle,
+  FileText, ShieldCheck, LogOut, Sparkles, X, HelpCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
@@ -13,7 +13,6 @@ const links = [
   { to: "/results", icon: BarChart3, label: "My polls" },
   { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/profile", icon: User, label: "Profile" },
-  { to: "/profile/edit", icon: UserCog, label: "Edit profile" },
   { to: "/settings", icon: Settings, label: "Settings" },
   { to: "/terms", icon: FileText, label: "Terms" },
   { to: "/privacy", icon: ShieldCheck, label: "Privacy" },
