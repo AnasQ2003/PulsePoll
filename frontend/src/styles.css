@@ -160,24 +160,8 @@ body {
   justify-content: space-between;
 }
 
-/* Force all toast notifications to render exactly in the center of the viewport */
-[data-sonner-toaster] {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  bottom: auto !important;
-  right: auto !important;
-  z-index: 99999 !important;
-  pointer-events: none;
-}
-[data-sonner-toaster] > ol {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transform: scale(1.05) !important;
-}
+
+
 
 /* Responsive: on real phone screens, hide the mockup bezels and buttons */
 @media (max-width: 768px) {
