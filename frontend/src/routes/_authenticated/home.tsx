@@ -127,7 +127,7 @@ function HomePage() {
       {/* Greeting Header */}
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
         <div className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold">
-          {new Date().getHours() < 12 ? "Good morning to anas" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}
+          {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Hi, {firstName}</h1>
       </motion.div>
