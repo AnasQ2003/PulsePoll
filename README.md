@@ -6,6 +6,8 @@
 
 ### *Polls, beautifully done.*
 
+🎬 **Watch the Demo Video — PulsePoll:** [https://youtu.be/MIThRKy1dkc](https://youtu.be/MIThRKy1dkc)
+
 **A full-stack, mobile-first poll application built with React, Node.js, and Microsoft SQL Server.**  
 Premium glassmorphism UI · Live voting · PDF analytics reports · Dark mode · XP achievements
 
