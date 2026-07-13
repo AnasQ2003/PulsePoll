@@ -468,31 +468,6 @@ All API routes are prefixed with `/api`. Authentication required routes need a `
 | `POST` | `/api/auth/register` | ❌ | Register a new user |
 | `POST` | `/api/auth/login` | ❌ | Login and receive JWT token |
 
-**Register body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "securepassword",
-  "username": "johndoe",
-  "display_name": "John Doe"
-}
-```
-
-**Login body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "securepassword"
-}
-```
-
-**Response (both):**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": { "id": 1, "email": "user@example.com", "username": "johndoe" }
-}
-```
 
 ---
 
