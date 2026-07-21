@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="screenshots/Screenshot 2026-07-02 105750.png" width="220" alt="PulsePoll Splash Screen" />
-
 # 🗳️ PulsePoll
 
 ### *Polls, beautifully done.*
@@ -624,7 +622,7 @@ We use [Conventional Commits](https://conventionalcommits.org):
 ```
 MIT License
 
-Copyright (c) PulsePoll---2026 AnasQ2003
+Copyright (c) PulsePoll --- 2026 AnasQ2003
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
