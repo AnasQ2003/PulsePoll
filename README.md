@@ -150,59 +150,101 @@ The app is rendered as a **phone mockup on desktop** and transitions to a **full
 
 ### Onboarding
 
-| Splash Screen | Login | Sign Up |
-|:---:|:---:|:---:|
-| ![Splash](screenshots/Screenshot%202026-07-02%20105750.png) | ![Login](screenshots/Screenshot%202026-07-02%20105853.png) | ![Signup](screenshots/Screenshot%202026-07-02%20105901.png) |
-
-| Terms & Privacy | Sign Up Form | Home Screen |
-|:---:|:---:|:---:|
-| ![Terms](screenshots/Screenshot%202026-07-02%20105910.png) | ![Signup Form](screenshots/Screenshot%202026-07-02%20105923.png) | ![Home](screenshots/Screenshot%202026-07-02%20110609.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20105750.png" width="100%"/><br/><b>Splash Screen</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20105853.png" width="100%"/><br/><b>Login</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20105901.png" width="100%"/><br/><b>Sign Up</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20105910.png" width="100%"/><br/><b>Terms & Privacy</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20105923.png" width="100%"/><br/><b>Sign Up Form</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110609.png" width="100%"/><br/><b>Home Screen</b></td>
+  </tr>
+</table>
 
 ### Home & Navigation
 
-| Home Feed | Side Drawer | Home Trending |
-|:---:|:---:|:---:|
-| ![Home Feed](screenshots/Screenshot%202026-07-02%20110615.png) | ![Drawer](screenshots/Screenshot%202026-07-02%20110630.png) | ![Trending](screenshots/Screenshot%202026-07-02%20110636.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110615.png" width="100%"/><br/><b>Home Feed</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110630.png" width="100%"/><br/><b>Side Drawer</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110636.png" width="100%"/><br/><b>Home Trending</b></td>
+    <td align="center" width="50%"></td>
+  </tr>
+</table>
 
 ### Discover & Create
 
-| Discover | Discover Grid | Create Poll |
-|:---:|:---:|:---:|
-| ![Discover](screenshots/Screenshot%202026-07-02%20110642.png) | ![Discover Grid](screenshots/Screenshot%202026-07-02%20110648.png) | ![Create](screenshots/Screenshot%202026-07-02%20110658.png) |
-
-| Create Options | Audience Picker | Poll Preview |
-|:---:|:---:|:---:|
-| ![Create Options](screenshots/Screenshot%202026-07-02%20110710.png) | ![Audience](screenshots/Screenshot%202026-07-02%20110715.png) | ![Preview](screenshots/Screenshot%202026-07-02%20110721.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110642.png" width="100%"/><br/><b>Discover</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110648.png" width="100%"/><br/><b>Discover Grid</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110658.png" width="100%"/><br/><b>Create Poll</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110710.png" width="100%"/><br/><b>Create Options</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110715.png" width="100%"/><br/><b>Audience Picker</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110721.png" width="100%"/><br/><b>Poll Preview</b></td>
+  </tr>
+</table>
 
 ### Voting & Results
 
-| Poll Voting | Vote Confirmation | Results Overview |
-|:---:|:---:|:---:|
-| ![Poll](screenshots/Screenshot%202026-07-02%20110726.png) | ![Vote](screenshots/Screenshot%202026-07-02%20110733.png) | ![Results](screenshots/Screenshot%202026-07-02%20110740.png) |
-
-| Results Detail | PDF Export | Analytics Charts |
-|:---:|:---:|:---:|
-| ![Results Detail](screenshots/Screenshot%202026-07-02%20110745.png) | ![PDF](screenshots/Screenshot%202026-07-02%20110751.png) | ![Charts](screenshots/Screenshot%202026-07-02%20110757.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110726.png" width="100%"/><br/><b>Poll Voting</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110733.png" width="100%"/><br/><b>Vote Confirmation</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110740.png" width="100%"/><br/><b>Results Overview</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110745.png" width="100%"/><br/><b>Results Detail</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110751.png" width="100%"/><br/><b>PDF Export</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110757.png" width="100%"/><br/><b>Analytics Charts</b></td>
+  </tr>
+</table>
 
 ### Notifications & Profile
 
-| Notifications | Profile | Profile Tabs |
-|:---:|:---:|:---:|
-| ![Notifications](screenshots/Screenshot%202026-07-02%20110803.png) | ![Profile](screenshots/Screenshot%202026-07-02%20110809.png) | ![Profile Tabs](screenshots/Screenshot%202026-07-02%20110816.png) |
-
-| My Polls Tab | Edit Profile | Edit Profile Form |
-|:---:|:---:|:---:|
-| ![My Polls](screenshots/Screenshot%202026-07-02%20110822.png) | ![Edit Profile](screenshots/Screenshot%202026-07-02%20110833.png) | ![Edit Form](screenshots/Screenshot%202026-07-02%20110841.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110803.png" width="100%"/><br/><b>Notifications</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110809.png" width="100%"/><br/><b>Profile</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110816.png" width="100%"/><br/><b>Profile Tabs</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110822.png" width="100%"/><br/><b>My Polls Tab</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110833.png" width="100%"/><br/><b>Edit Profile</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110841.png" width="100%"/><br/><b>Edit Profile Form</b></td>
+  </tr>
+</table>
 
 ### Settings & Appearance
 
-| Settings Main | Settings Notifications | Settings Appearance |
-|:---:|:---:|:---:|
-| ![Settings](screenshots/Screenshot%202026-07-02%20110850.png) | ![Notif Settings](screenshots/Screenshot%202026-07-02%20110855.png) | ![Appearance](screenshots/Screenshot%202026-07-02%20110902.png) |
-
-| Dark Mode | Settings About | Terms of Service |
-|:---:|:---:|:---:|
-| ![Dark Mode](screenshots/Screenshot%202026-07-02%20110918.png) | ![About](screenshots/Screenshot%202026-07-02%20110928.png) | ![Terms](screenshots/Screenshot%202026-07-02%20110951.png) |
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110850.png" width="100%"/><br/><b>Settings Main</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110855.png" width="100%"/><br/><b>Settings Notifications</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110902.png" width="100%"/><br/><b>Settings Appearance</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110918.png" width="100%"/><br/><b>Dark Mode</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110928.png" width="100%"/><br/><b>Settings About</b></td>
+    <td align="center" width="50%"><img src="screenshots/Screenshot%202026-07-02%20110951.png" width="100%"/><br/><b>Terms of Service</b></td>
+  </tr>
+</table>
 
 ---
 
