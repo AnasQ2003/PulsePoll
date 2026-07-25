@@ -438,7 +438,7 @@ Before you begin, ensure you have the following installed:
 
    You should see:
    ```
-   🟢 PulsePoll API running on http://localhost:5000
+   🟢 PulsePoll API running 
    ```
 
 6. **Verify it's working:**
@@ -484,10 +484,9 @@ Before you begin, ensure you have the following installed:
    ```
    VITE ready in Xms
 
-   ➜  Local:   http://localhost:8080/
    ```
 
-5. **Open your browser** and go to [http://localhost:8080](http://localhost:8080)
+5. **Open your browser** 
 
 6. **Create your first account:**
    - Click **Sign Up** on the login screen
